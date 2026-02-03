@@ -1,0 +1,98 @@
+<div class="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-4">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <h1 class="text-4xl text-white font-extrabold tracking-tight">Login</h1>
+      <p class="text-neutral-400 mt-2">Enter your credentials to access your account</p>
+    </div>
+
+    <div class="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-2xl">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium text-neutral-300 ml-1">Email Address</label>
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="name@company.com"
+            [class.border-red-500]="
+              loginForm.get('email')?.touched && loginForm.get('email')?.invalid
+            "
+            class="w-full p-3 rounded-lg bg-neutral-800 text-white border border-neutral-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-neutral-500"
+          />
+          <div class="h-4">
+            @if (loginForm.get('email')?.touched) {
+              @if (loginForm.get('email')?.errors?.['required']) {
+                <small class="text-red-400 text-xs animate-in fade-in slide-in-from-top-1"
+                  >Email is required.</small
+                >
+              } @else if (loginForm.get('email')?.errors?.['email']) {
+                <small class="text-red-400 text-xs animate-in fade-in slide-in-from-top-1"
+                  >Invalid email format.</small
+                >
+              }
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium text-neutral-300 ml-1">Password</label>
+          <input
+            type="password"
+            formControlName="password"
+            placeholder="••••••••"
+            [class.border-red-500]="
+              loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+            "
+            class="w-full p-3 rounded-lg bg-neutral-800 text-white border border-neutral-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-neutral-500"
+          />
+          <div class="h-4">
+            @if (loginForm.get('password')?.touched) {
+              @if (loginForm.get('password')?.errors?.['required']) {
+                <small class="text-red-400 text-xs animate-in fade-in slide-in-from-top-1"
+                  >Password is required.</small
+                >
+              } @else if (loginForm.get('password')?.errors?.['minlength']) {
+                <small class="text-red-400 text-xs animate-in fade-in slide-in-from-top-1"
+                  >Minimum 6 characters required.</small
+                >
+              }
+            }
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full mt-2 bg-blue-600 hover:bg-blue-500 disabled:bg-neutral-700 disabled:text-neutral-500 disabled:cursor-not-allowed text-white font-bold py-3 rounded-lg transition-all shadow-lg active:scale-[0.98]"
+        >
+          Sign In
+        </button>
+      </form>
+
+      <div class="relative my-8">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-neutral-800"></div>
+        </div>
+        <div class="relative flex justify-center text-xs uppercase">
+          <span class="bg-neutral-900 px-2 text-neutral-500">Or continue with</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        routerLink="/sign-in"
+        [state]="{ loginForm: loginForm.value }"
+        class="w-full flex items-center justify-center gap-3 bg-white hover:bg-neutral-100 text-neutral-900 font-semibold py-3 rounded-lg transition-all active:scale-[0.98]"
+      >
+        <img
+          src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+          alt="Google"
+          class="w-5 h-5"
+        />
+        Google Account
+      </button>
+    </div>
+
+    <p class="text-center text-neutral-500 text-sm mt-8">
+      Don't have an account? <a href="#" class="text-blue-400 hover:underline">Create one</a>
+    </p>
+  </div>
+</div>

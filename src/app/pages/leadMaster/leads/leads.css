@@ -1,0 +1,51 @@
+.pending_lead {
+  color: 'white';
+  border: #f59e0b;
+  background-color: #f59e0b;
+  border-radius: 10px;
+  padding: '2px';
+  align-items: center;
+  text-transform: capitalize;
+  
+}
+.completed_lead {
+  color: 'white';
+  border: #10b981;
+  background-color: #10b981;
+  border-radius: 10px;
+  padding: '2px';
+  align-items: center;
+  text-transform: capitalize;
+
+}
+.inprogrss_lead {
+  color: 'white';
+  border: #3b82f6;
+  background-color: #3b82f6;
+  border-radius: 10px;
+  padding: '2px';
+  text-transform: capitalize;
+
+}
+.accepted_lead {
+  color: 'white';
+  border: #22c55e;
+  background-color: #22c55e;
+  border-radius: 10px;
+  padding: '2px';
+  text-transform: capitalize;
+
+}
+.notified_lead {
+  color: 'white';
+  border: #ef4444;
+  background-color: #ef4444;
+  border-radius: 10px;
+  padding: '2px';
+  text-transform: capitalize;
+
+}
+.disable_button{
+  pointer-events: none;
+  opacity: 0.5;
+}

@@ -1,0 +1,16 @@
+.pending_agent {
+  font-size: medium;
+  font-weight: 300;
+  color: white;
+  background-color: red;
+}
+.active_agent {
+  font-size: medium;
+  font-weight: 300;
+  color: white;
+  background-color: green;
+}
+.disable_button{
+  pointer-events: none;
+  opacity: 0.5;
+}

@@ -1,0 +1,96 @@
+<div class="p-8 bg-slate-50 min-h-screen">
+  @if (!isLoading()) {
+    <div class="flex items-center gap-4 mb-8">
+      <div class="flex items-center gap-4">
+        <h1 class="text-2xl font-bold text-slate-800">{{ leadData()?.lead?.lead_code }}</h1>
+      </div>
+      <span
+        class="ml-auto px-4 py-1.5 rounded-full text-xs font-bold uppercase bg-green-100 text-green-700"
+      >
+        {{ leadData()?.lead?.lead_status }}
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <h2 class="text-lg font-semibold mb-6 text-slate-800 border-b pb-2">Business Details</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+            @for (
+              item of [
+                { label: 'Business Name', value: leadData()?.lead?.business_name },
+                { label: 'Contact Number', value: leadData()?.lead?.phone_number },
+                { label: 'Email Address', value: leadData()?.lead?.email },
+                { label: 'Bank Name', value: leadData()?.lead?.bank_name },
+                { label: 'Marchent Name', value: leadData()?.lead?.merchant_name },
+                { label: 'Address', value: leadData()?.lead?.address },
+              ];
+              track item.label
+            ) {
+              <div>
+                <label class="text-xs text-slate-400 uppercase font-bold tracking-wider">{{
+                  item.label
+                }}</label>
+                <p class="text-slate-700 font-medium">{{ item.value || 'N/A' }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <h2 class="text-lg font-semibold mb-6 text-slate-800">Assigned Agent</h2>
+          <div class="flex items-center gap-4 mb-6">
+            <img
+              [src]="'http://' + leadData()?.agent?.agent_profile_photo"
+              class="w-16 h-16 rounded-xl object-cover border-2 border-slate-100"
+              alt="Agent"
+            />
+            <div>
+              <p class="font-bold text-slate-800 text-lg">{{ leadData()?.agent?.agent_name }}</p>
+              <p class="text-sm text-slate-500">{{ leadData()?.agent?.agent_email }}</p>
+            </div>
+          </div>
+          <div class="space-y-3 bg-slate-50 p-4 rounded-xl">
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Accepted On</span>
+              <span class="font-medium text-slate-700">{{ leadData()?.agent?.accepted_on }}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">TAT Duration</span>
+              <span class="font-medium text-blue-600">{{ leadData()?.agent?.tat_duration }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 p-6 rounded-2xl shadow-lg text-white">
+          <h2 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-4">
+            Time Progress
+          </h2>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between mb-1 text-xs">
+                <span>Elapsed: {{ leadData()?.agent?.time_elapsed }}</span>
+                <span>Remaining: {{ leadData()?.agent?.time_remaining }}</span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-2">
+                <div
+                  class="bg-blue-500 h-2 rounded-full transition-all duration-500"
+                  style="width: 45%"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="flex flex-col items-center justify-center min-h-[60vh] w-full">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600 mb-4"
+      ></div>
+      <p class="text-slate-500 font-medium animate-pulse tracking-wide">Fetching lead details...</p>
+    </div>
+  }
+</div>

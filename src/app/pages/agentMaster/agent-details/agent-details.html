@@ -1,0 +1,195 @@
+<div class="mx-auto p-6 bg-slate-50 min-h-screen">
+  @if (isLoading()) {
+    <!-- Loading State -->
+    <div class="flex flex-col items-center justify-center w-full py-20">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
+      <p class="text-slate-500 font-medium animate-pulse tracking-wide">Fetching your leads...</p>
+    </div>
+  } @else {
+    <!-- Content -->
+    <div>
+      <!-- Header -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex items-center space-x-5">
+            <div class="relative">
+              <img
+                [src]="data()?.personal_details?.profile_photo || 'assets/avatar.png'"
+                class="w-24 h-24 rounded-full object-cover border-4 border-slate-100 shadow-sm"
+                alt="Agent Profile"
+              />
+              <div
+                class="absolute bottom-1 right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full"
+              ></div>
+            </div>
+
+            <div>
+              <h1 class="text-2xl font-bold text-slate-900">
+                {{ data()?.personal_details?.name }}
+              </h1>
+              <div class="flex items-center space-x-3 mt-1">
+                <span class="text-sm font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                  {{ data()?.personal_details?.agent_code }}
+                </span>
+                <span class="text-slate-300">|</span>
+                <span class="text-sm text-slate-500">
+                  Submitted: {{ data()?.submitted_date }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-3">
+            <button
+              (click)="onRevert()"
+              class="px-6 py-2.5 border border-red-200 text-red-600 font-semibold rounded-lg hover:bg-red-50"
+            >
+              Revert
+            </button>
+            <button
+              (click)="onApprove()"
+              class="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700"
+            >
+              Approve Agent
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Personal Info -->
+          <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div class="bg-slate-50 px-6 py-3 border-b border-slate-200">
+              <h3 class="font-bold text-slate-700 uppercase text-xs tracking-wider">
+                Personal Information
+              </h3>
+            </div>
+
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p class="text-xs text-slate-400 uppercase">Contact Number</p>
+                <p class="font-medium text-slate-800">
+                  {{ data()?.personal_details?.contact_number }}
+                </p>
+              </div>
+
+              <div>
+                <p class="text-xs text-slate-400 uppercase">Email</p>
+                <p class="font-medium text-slate-800">
+                  {{ data()?.personal_details?.email }}
+                </p>
+              </div>
+
+              <div>
+                <p class="text-xs text-slate-400 uppercase">Gender / DOB</p>
+                <p class="font-medium text-slate-800">
+                  {{ data()?.personal_details?.gender }} /
+                  {{ data()?.personal_details?.dob }}
+                </p>
+              </div>
+
+              <div>
+                <p class="text-xs text-slate-400 uppercase">Emergency Contact</p>
+                <p class="font-medium text-slate-800">
+                  {{ data()?.personal_details?.emergency_contact_number || '-' }}
+                </p>
+              </div>
+
+              <div class="md:col-span-2">
+                <p class="text-xs text-slate-400 uppercase">Address</p>
+                <p class="font-medium text-slate-800">
+                  {{ data()?.personal_details?.current_address }},
+                  {{ data()?.personal_details?.current_city }},
+                  {{ data()?.personal_details?.current_state }} -
+                  {{ data()?.personal_details?.current_pincode }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents -->
+          <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div class="bg-slate-50 px-6 py-3 border-b border-slate-200">
+              <h3 class="font-bold text-slate-700 uppercase text-xs tracking-wider">
+                Documents for Verification
+              </h3>
+            </div>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+              @for (
+                item of [
+                  { label: 'Aadhaar Front', img: data()?.documents?.aadhaar_front },
+                  { label: 'Aadhaar Back', img: data()?.documents?.aadhaar_back },
+                  {
+                    label:
+                      'Additional (' + (data()?.documents?.additional_document_type || 'N/A') + ')',
+                    img: data()?.documents?.additional_document_image,
+                  },
+                ];
+                track item.label
+              ) {
+                <div>
+                  <p class="text-sm font-medium text-slate-600 mb-2">
+                    {{ item.label }}
+                  </p>
+
+                  <div
+                    class="group relative aspect-video rounded-lg overflow-hidden border bg-slate-100"
+                  >
+                    <img [src]="(item?.img ?? null) | cleanUrl" class="w-full h-full object-cover" />
+
+                    <a
+                      [href]="(item?.img ?? null) | cleanUrl"
+                      target="_blank"
+                      class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
+                    >
+                      <span class="text-white text-xs font-bold uppercase tracking-widest">
+                        View Full Size
+                      </span>
+                    </a>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="space-y-6">
+          <!-- Bank -->
+          <div class="bg-slate-900 rounded-xl p-6 text-white">
+            <h3 class="text-slate-400 text-xs font-bold uppercase mb-4">Payout Account</h3>
+
+            <p class="text-lg font-semibold">
+              {{ data()?.bank_details?.account_name }}
+            </p>
+            <p class="font-mono mt-2">
+              {{ data()?.bank_details?.account_number }}
+            </p>
+            <p class="font-mono text-slate-300 mt-1">
+              {{ data()?.bank_details?.ifsc_code }}
+            </p>
+          </div>
+
+          <!-- Service Areas -->
+          <div class="bg-white rounded-xl border border-slate-200 p-6">
+            <h3 class="font-bold mb-3">Service Areas</h3>
+            <div class="flex flex-wrap gap-2">
+              @for (p of data()?.agentPincode; track p) {
+                <span
+                  class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium border border-blue-100"
+                >
+                  {{ p }}
+                </span>
+              } @empty {
+                <span class="text-slate-400 italic text-sm"> No service areas assigned. </span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

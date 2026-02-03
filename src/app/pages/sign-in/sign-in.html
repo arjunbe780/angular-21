@@ -1,0 +1,100 @@
+<div class="h-[100vh] flex items-center justify-center gap-6">
+  <form
+    [formGroup]="reactForm"
+    class="flex flex-col bg-red-50 p-4 gap-2"
+    (ngSubmit)="reactFormSubmit()"
+  >
+    <h1 class="header">Reactive Form</h1>
+    <input
+      placeholder="Username"
+      formControlName="email"
+      class="input"
+      type="email"
+      [class.border-red-500]="reactForm.get('email')?.touched && reactForm.get('email')?.invalid"
+    />
+    <app-app-input label="Email Address" placeholder="Enter your email" formControlName="email">
+    </app-app-input>
+    <div>
+      @if (reactForm.get('email')?.touched) {
+        @if (reactForm.get('email')?.errors?.['required']) {
+          <small class="text-red-400 text-xs animate-in fade-in slide-in-from-top-1"
+            >Email is required.</small
+          >
+        } @else if (reactForm.get('email')?.errors?.['email']) {
+          <small class="text-red-400 text-xs animate-in fade-in slide-in-from-top-1"
+            >Invalid email format.</small
+          >
+        }
+      }
+    </div>
+    <input placeholder="Password" formControlName="password" class="input" type="password" />
+    <div>
+      @if (reactForm.get('password')?.touched) {
+        @if (reactForm.get('password')?.errors?.['required']) {
+          <small class="text-red-400 text-xs animate-in fade-in slide-in-from-top-1"
+            >Password is required.</small
+          >
+        } @else if (reactForm.get('password')?.errors?.['minlength']) {
+          <small class="text-red-400 text-xs animate-in fade-in slide-in-from-top-1"
+            >Minimum 6 characters required.</small
+          >
+        }
+      }
+    </div>
+    <button type="submit" class="button">React Form Submit</button>
+  </form>
+  <form
+    #loginForm="ngForm"
+    (ngSubmit)="onSubmit(loginForm)"
+    class="flex flex-col bg-red-50 p-4 gap-2"
+  >
+    <h1 class="header">Template Form</h1>
+
+    <input
+      type="email"
+      name="email"
+      #emailVar="ngModel"
+      ngModel
+      required
+      email
+      class="input"
+      placeholder="Enter Email"
+    />
+
+    <div>
+      @if (emailVar.touched && emailVar.invalid) {
+        @if (emailVar.errors?.['required']) {
+          <small class="text-red-400 text-xs">Email is required.</small>
+        } @else if (emailVar.errors?.['email']) {
+          <small class="text-red-400 text-xs">Invalid email format.</small>
+        }
+      }
+    </div>
+
+    <input
+      type="password"
+      name="password"
+      #passVar="ngModel"
+      ngModel
+      required
+      minlength="6"
+      class="input"
+      placeholder="Enter Password"
+    />
+
+    <div>
+      @if (passVar.touched && passVar.invalid) {
+        @if (passVar.errors?.['required']) {
+          <small class="text-red-400 text-xs">Password is required.</small>
+        } @else if (passVar.errors?.['minlength']) {
+          <small class="text-red-400 text-xs">Minimum 6 characters required.</small>
+        }
+      }
+    </div>
+
+    <button type="submit" [disabled]="loginForm.invalid" class="button">Login</button>
+  </form>
+  <h1>{{ count() }}</h1>
+  <button class="button" (click)="stopTimer()">Stop</button>
+  <button class="button" (click)="startTimer()">Start</button>
+</div>

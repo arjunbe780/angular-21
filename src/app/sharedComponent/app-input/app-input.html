@@ -1,0 +1,11 @@
+<div class="flex flex-col gap-1">
+  <label class="text-sm font-semibold">{{ label }}</label>
+  <input
+    [type]="type"
+    [placeholder]="placeholder"
+    (input)="onInputChange($event)"
+    (blur)="onTouched()"
+    [value]="value"
+    class="border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none"
+  />
+</div>
