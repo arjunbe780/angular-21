@@ -18,7 +18,13 @@ export class SideMenu {
 
   menuItems: MenuItem[] = [
     { label: 'Home', route: '/home' },
-    { label: 'Leads', route: '/leads' },
+    {
+      label: 'Leads',
+      children: [
+        { label: 'Leads Dashboard', route: '/leads/dashboard' },
+        { label: 'Leads List', route: 'leads/list' },
+      ],
+    },
     {
       label: 'Agent',
       children: [

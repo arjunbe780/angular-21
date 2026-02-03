@@ -1,0 +1,162 @@
+@if (leadsData(); as data) {
+  <section class="min-h-screen bg-slate-50 p-6 space-y-10">
+    <!-- Header -->
+    <header class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-extrabold text-slate-800">Leads Performance</h1>
+        <p class="text-sm text-slate-500">Real-time operational tracking & TAT analysis</p>
+      </div>
+
+      <span
+        class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase text-blue-700"
+      >
+        Period: {{ data.filters_applied?.trend_period }}
+      </span>
+    </header>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-blue-500">
+        <p class="text-xs font-bold text-slate-400 uppercase">Total Active</p>
+        <h3 class="text-2xl font-black text-slate-800">{{ data.summary_cards.active_leads }}</h3>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-red-500">
+        <p class="text-xs font-bold text-red-400 uppercase">TAT Breached</p>
+        <h3 class="text-2xl font-black text-red-600">{{ data.summary_cards.tat_breached }}</h3>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-orange-500">
+        <p class="text-xs font-bold text-orange-400 uppercase">Overdue</p>
+        <h3 class="text-2xl font-black text-orange-600">
+          {{ data.completion_metrics.overdue_leads }}
+        </h3>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-indigo-500">
+        <p class="text-xs font-bold text-indigo-400 uppercase">Appr. Deadline</p>
+        <h3 class="text-2xl font-black text-indigo-600">
+          {{ data.completion_metrics.approaching_deadline }}
+        </h3>
+      </div>
+    </div>
+    <!-- Charts + Metrics -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Weekly Lead Flow -->
+      <div class="lg:col-span-2 dashboard-card min-h-[340px]">
+        <h3 class="section-title mb-4">Weekly Lead Flow</h3>
+
+        <!-- Chart Container -->
+        <div class="relative h-48 overflow-hidden">
+          <div class="absolute inset-0 flex items-end gap-2 px-2">
+            @for (item of data.lead_flow_trend; track item.date) {
+              <div class="flex flex-1 flex-col items-center justify-end gap-1">
+                <div
+                  title="{{ item.created }}"
+                  class="w-full rounded-t-sm bg-indigo-500 max-h-full cursor-pointer"
+                  [style.height.px]="item.created"
+                ></div>
+
+                <div
+                  title="{{ item.completed }}"
+                  class="w-full rounded-t-sm bg-green-400 max-h-full cursor-pointer"
+                  [style.height.px]="item.completed"
+                ></div>
+
+                <span class="mt-2 text-[9px] text-slate-400">
+                  {{ item.date }}
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="mt-4 flex gap-6 text-[10px] font-bold uppercase text-slate-600">
+          <span class="flex items-center gap-1">
+            <span class="h-2 w-2 bg-indigo-500"></span> Created
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="h-2 w-2 bg-green-400"></span> Completed
+          </span>
+        </div>
+      </div>
+
+      <!-- Workload Summary -->
+      <div class="dashboard-card">
+        <h3 class="section-title">Workload Summary</h3>
+
+        <div class="space-y-4 text-sm">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Exclusive Notified</span>
+            <span class="font-mono font-bold">
+              {{ data.summary_cards.exclusive_notified }}
+            </span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-slate-500">Acceptance Rate</span>
+            <span class="font-bold text-blue-600"> {{ data.exclusive_acceptance_rate }}% </span>
+          </div>
+
+          <div class="border-t pt-4">
+            <p class="mb-1 text-[10px] font-bold uppercase text-slate-400">Avg Completion Time</p>
+            <span class="text-xl font-extrabold">
+              {{ data.completion_metrics.avg_completion_minutes }} min
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent Workload Table -->
+    <div class="dashboard-card overflow-hidden">
+      <div class="border-b bg-slate-50/60 px-5 py-4">
+        <h3 class="section-title">Agent Workload Distribution</h3>
+      </div>
+      <div class="dashboard-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="bg-slate-50 text-[10px] uppercase text-slate-400">
+              <tr>
+                <th class="px-6 py-3">Agent</th>
+                <th class="px-6 py-3 text-center">Active</th>
+                <th class="px-6 py-3">Capacity</th>
+                <th class="px-6 py-3 text-right">Avg Time</th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y">
+              @for (agent of data.agent_workload; track agent.agent_id) {
+                <tr class="transition hover:bg-blue-50/30">
+                  <td class="px-6 py-4 font-semibold text-slate-700">
+                    {{ agent.agent_name }}
+                  </td>
+
+                  <td class="px-6 py-4 text-center">
+                    <span class="rounded bg-slate-100 px-2 py-1 text-xs font-bold">
+                      {{ agent.active_leads }}
+                    </span>
+                  </td>
+
+                  <td class="px-6 py-4">
+                    <div class="h-1.5 w-32 rounded-full bg-slate-100">
+                      <div
+                        class="h-full rounded-full bg-indigo-500"
+                        [style.width.%]="agent.active_leads * 10"
+                      ></div>
+                    </div>
+                  </td>
+
+                  <td class="px-6 py-4 text-right text-xs text-slate-500">
+                    {{ agent.avg_completion_time_hours }}h
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+}

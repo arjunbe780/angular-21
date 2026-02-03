@@ -6,6 +6,7 @@ import { AgentDetails } from './pages/agentMaster/agent-details/agent-details';
 import { AgentList } from './pages/agentMaster/agent-list/agent-list';
 import { Home } from './pages/home/home';
 import { LeadDetails } from './pages/leadMaster/lead-details/lead-details';
+import { LeadsDashboard } from './pages/leadMaster/leads-dashboard/leads-dashboard';
 import { Leads } from './pages/leadMaster/leads/leads';
 import { Login } from './pages/login/login';
 import { SignIn } from './pages/sign-in/sign-in';
@@ -25,8 +26,12 @@ export const routes: Routes = [
     children: [
       { path: 'home', component: Home },
       {
-        path: 'leads',
+        path: 'leads/list',
         component: Leads,
+      },
+      {
+        path: 'leads/dashboard',
+        component: LeadsDashboard,
       },
       {
         path: 'agent/list',
