@@ -10,6 +10,18 @@
   color: white;
   background-color: green;
 }
+.reject_agent {
+  font-size: medium;
+  font-weight: 300;
+  color: white;
+  background-color: black;
+}
+.resubmit_agent {
+  font-size: medium;
+  font-weight: 300;
+  color: white;
+  background-color: blueviolet;
+}
 .disable_button{
   pointer-events: none;
   opacity: 0.5;

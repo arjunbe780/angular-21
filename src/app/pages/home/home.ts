@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { SideMenu } from '../../sharedComponent/side-menu/side-menu';
 
 interface MenuItem {
   label: string;
@@ -9,7 +7,7 @@ interface MenuItem {
 }
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, RouterLinkActive,RouterOutlet,SideMenu],
+  imports: [],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

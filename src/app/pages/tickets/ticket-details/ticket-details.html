@@ -1,0 +1,122 @@
+@if (ticket().ticketsdetail) {
+  <div class="p-6 bg-gray-50 min-h-screen">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <span class="text-blue-600">#{{ ticket().ticketsdetail.ticket_number }}</span>
+          {{ ticket().ticketsdetail.subject }}
+        </h1>
+        <p class="text-gray-500">
+          Module:
+          <span class="font-medium text-gray-700">{{ ticket().ticketsdetail.modules }}</span>
+        </p>
+      </div>
+
+      <button
+        (click)="onCloseTicket(ticket().ticketsdetail.id)"
+        [disabled]="ticket().ticketsdetail.status === 1"
+        class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-sm transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 mr-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        Close Ticket
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <h3 class="text-lg font-semibold mb-4 border-b pb-2">Description</h3>
+          <p class="text-gray-700 leading-relaxed">
+            {{ ticket().ticketsdetail.description }}
+          </p>
+        </div>
+
+        @if (ticket().ticketsdetail.updated_by) {
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h3 class="text-lg font-semibold mb-4">Last Updated By</h3>
+            <div class="flex items-center gap-4">
+              <div
+                class="h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl"
+              >
+                {{ ticket().ticketsdetail.updated_by.first_name[0]
+                }}{{ ticket().ticketsdetail.updated_by.last_name[0] }}
+              </div>
+              <div>
+                <p class="font-medium text-gray-900">
+                  {{ ticket().ticketsdetail.updated_by.full_name }}
+                </p>
+                <p class="text-sm text-gray-500">
+                  {{ ticket().ticketsdetail.updated_by.email }} |
+                  {{ ticket().ticketsdetail.updated_by.phone }}
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="space-y-6">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">
+            Ticket Info
+          </h3>
+
+          <div class="space-y-4">
+            <div>
+              <label class="text-xs text-gray-400 block">Status</label>
+              <span
+                [class]="
+                  ticket().ticketsdetail.status === 1
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-gray-100 text-gray-700'
+                "
+                class="px-3 py-1 rounded-full text-xs font-bold uppercase text-black"
+              >
+                {{ ticket().ticketsdetail.status === 1 ? 'Open' : 'Closed' }}
+              </span>
+            </div>
+
+            <div>
+              <label class="text-xs text-gray-400 block">Priority</label>
+              <span class="text-sm font-medium text-gray-900">
+                {{ ticket().ticketsdetail.priority === 1 ? 'High' : 'Normal' }}
+              </span>
+            </div>
+
+            <hr class="border-gray-50" />
+
+            <div>
+              <label class="text-xs text-gray-400 block">Created Date</label>
+              <p class="text-sm font-medium">{{ ticket().ticketsdetail.created_date }}</p>
+            </div>
+
+            <div>
+              <label class="text-xs text-gray-400 block">Last Update</label>
+              <p class="text-sm font-medium text-blue-600">
+                {{ ticket().ticketsdetail.updated_date }}
+              </p>
+            </div>
+
+            <div *ngIf="ticket().ticketsdetail.closed_at">
+              <label class="text-xs text-gray-400 block">Closed At</label>
+              <p class="text-sm font-medium text-red-500">{{ ticket().ticketsdetail.closed_at }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

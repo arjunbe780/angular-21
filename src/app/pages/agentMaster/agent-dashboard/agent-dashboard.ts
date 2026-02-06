@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 export interface DashboardResponse {
   status: boolean;
   message: string;
@@ -56,10 +57,13 @@ export interface AgentRanking {
   full_name: string;
   total_completed_leads: number;
 }
-
+interface MonthOption {
+  label: string;
+  value: string;
+}
 @Component({
   selector: 'app-agent-dashboard',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './agent-dashboard.html',
   styleUrl: './agent-dashboard.css',
 })
@@ -68,13 +72,35 @@ export class AgentDashboard implements OnInit {
 
   // Initialize with null or a default object
   dashboardData = signal<DashboardData | null>(null);
+  months: MonthOption[] = [];
+  selectedMonth: any = '';
 
   ngOnInit() {
+    this.generateMonthList();
     this.loadDashboardData();
   }
+  generateMonthList() {
+    const today = new Date();
 
+    for (let i = 0; i < 12; i++) {
+      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+
+      // Manual formatting: Month (1-indexed) and Year
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const year = d.getFullYear();
+      const formattedValue = `${year}-${month}`; // Results in "10-2025"
+
+      this.months.push({
+        label: d.toLocaleString('default', { month: 'long', year: 'numeric' }),
+        value: formattedValue,
+      });
+    }
+    if (this.months.length > 0) {
+      this.selectedMonth = this.months[0].value;
+    }
+  }
   loadDashboardData() {
-    this.http.get<DashboardResponse>('http://13.202.146.57/api/v1/admin/agent/dashboard?from_date=2025-01-01&to_date=2026-01-27').subscribe({
+    this.http.get<DashboardResponse>(`agent/dashboard?month_year=${this.selectedMonth}`).subscribe({
       next: (res) => {
         if (res.status) {
           this.dashboardData.set(res.data);
@@ -82,5 +108,9 @@ export class AgentDashboard implements OnInit {
       },
       error: (err) => console.error('Dashboard Error:', err),
     });
+  }
+  handleMonthChange(newValue: Date) {
+    this.selectedMonth = newValue;
+    this.loadDashboardData();
   }
 }

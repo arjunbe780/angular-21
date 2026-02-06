@@ -10,12 +10,15 @@
         (input)="searchAgents()"
       />
       <select
-        (change)="handleOptionChange($event)"
+        [ngModel]="filterValue"
+        (ngModelChange)="handleOptionChange($event)"
         class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2 py-2"
       >
-        <option *ngFor="let option of filterOptions" [value]="option.value">
-          {{ option.label }}
-        </option>
+        @for (option of filterOptions; track option.value) {
+          <option [value]="option.value">
+            {{ option.label }}
+          </option>
+        }
       </select>
       <button
         [disabled]="pageNumber() === 1"
@@ -85,9 +88,26 @@
                     class="text-slate-700 font-mono text-capitalize bg-blue-100 px-2 py-1 rounded-lg"
                     [ngClass]="{
                       active_agent: agent.status === 4,
-                      pending_agent: agent.status !== 4,
+                      pending_agent: agent.status === 0,
+                      reject_agent: agent.status === 2 || agent.status === 5,
+                      resubmit_agent: agent.status === 3 || agent.status === 1,
                     }"
-                    >{{ agent.status == 4 ? 'Active' : 'Pending' }}</span
+                  >
+                    {{
+                      agent.status === 0
+                        ? 'Pending'
+                        : agent.status === 1
+                          ? 'Submitted'
+                          : agent.status === 2
+                            ? 'Rejected'
+                            : agent.status === 3
+                              ? 'Re-Submitted'
+                              : agent.status === 4
+                                ? 'Active'
+                                : agent.status === 5
+                                  ? 'Blocked'
+                                  : 'Unknown'
+                    }}</span
                   >
                 </td>
                 <td class="px-6 py-2">

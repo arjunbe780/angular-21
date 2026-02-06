@@ -1,9 +1,11 @@
-<div class="h-[100vh] flex items-center justify-center gap-6">
+<div class="h-[100vh] items-center justify-center gap-6">
+  <input [(ngModel)]="userData()[0].name" />
+  <h1>{{ userData()[0].name }}</h1>
   <form
     [formGroup]="reactForm"
     class="flex flex-col bg-red-50 p-4 gap-2"
     (ngSubmit)="reactFormSubmit()"
-  >
+  > 
     <h1 class="header">Reactive Form</h1>
     <input
       placeholder="Username"
@@ -97,4 +99,35 @@
   <h1>{{ count() }}</h1>
   <button class="button" (click)="stopTimer()">Stop</button>
   <button class="button" (click)="startTimer()">Start</button>
+  <input value="Arjua" #firstInput />
+
+  <button (click)="generate(firstInput.value)">click</button>
+  <!-- <h1>{{ userData() | json }}</h1> -->
+  <h1>{{ today | date: 'MM-dd-yyyy' }}</h1>
+  @for (user of userData(); track $index) {
+    <div class="flex gap-2">
+      <h1>{{ user.name }}</h1>
+      <input
+        type="checkbox"
+        name="userSelect"
+        [(ngModel)]="user.isSelected"
+        (ngModelChange)="handleCheckboxChange(user)"
+      />
+    </div>
+  }
+  <button (click)="handleSubmit()" class="button">Remove</button>
+  <!-- toggle the "special" class on/off with a property -->
+  <div [ngClass]="isSpecial ? 'special' : ''">This div is special</div>
+  @if (hero) {
+    <p>
+      I turned the corner
+      <ng-container> and saw {{ hero.name }}. I waved </ng-container>
+      and continued on my way.
+    </p>
+  }
+  <p>
+    I turned the corner
+    <ng-container *ngIf="hero"> and saw {{ hero.name }}. I waved </ng-container>
+    and continued on my way.
+  </p>
 </div>

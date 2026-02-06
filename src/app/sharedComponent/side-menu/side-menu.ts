@@ -39,6 +39,13 @@ export class SideMenu {
         { label: 'Clients', route: '/master/clients' },
       ],
     },
+    {
+      label: 'Tickets',
+      children: [
+        { label: 'Ticket Dashboard', route: '/ticket/dasboard' },
+        { label: 'Ticket List', route: '/ticket/list' },
+      ],
+    },
   ];
 
   toggleMenu(label: string) {

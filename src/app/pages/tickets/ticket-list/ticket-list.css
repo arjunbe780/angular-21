@@ -1,0 +1,12 @@
+.reject_ticket {
+  font-size: medium;
+  font-weight: 300;
+  color: white;
+  background-color: red;
+}
+.active_ticket {
+  font-size: medium;
+  font-weight: 300;
+  color: white;
+  background-color: green;
+}

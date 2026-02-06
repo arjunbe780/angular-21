@@ -174,7 +174,18 @@
   </div>
 } @else {
   <div class="p-6 space-y-8">
-    <h1 class="text-2xl font-bold text-slate-800">Agent Overview</h1>
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-slate-800">Agent Overview</h1>
+      <select
+        [(ngModel)]="selectedMonth"
+        (ngModelChange)="handleMonthChange($event)"
+        class="bg-slate-50 border border-slate-500 text-slate-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 outline-none p-2.5"
+      >
+        @for (m of months; track m.value) {
+          <option [ngValue]="m.value">{{ m.label }}</option>
+        }
+      </select>
+    </div>
     <div class="flex flex-col items-center justify-center w-full h-[100vh] text-slate-400">
       <p class="text-lg">No Summary found</p>
       <p class="text-sm">Try adjusting your filters or adding a new lead.</p>

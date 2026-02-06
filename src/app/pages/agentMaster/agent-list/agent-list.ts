@@ -31,11 +31,16 @@ export class AgentList implements OnInit, OnDestroy {
   agentList = signal<AgentListProps[]>([]);
   searchText$ = new Subject<string>();
   private subscription!: Subscription;
+  filterValue = null;
 
   filterOptions = [
-    { label: 'All', value: '' },
-    { label: 'Pending', value: 1 },
-    { label: 'Approved', value: 4 },
+    { label: 'All', value: null },
+    { label: 'Pending', value: 0 },
+    { label: 'Submitted', value: 1 },
+    { label: 'Rejected', value: 2 },
+    { label: 'Re-Submitted', value: 3 },
+    { label: 'Active', value: 4 },
+    { label: 'Blocked', value: 5 },
   ];
 
   tableHeader = ['#', 'Agent Id', 'Name', 'Status', 'City', 'Created Date', 'Action'];
@@ -59,7 +64,7 @@ export class AgentList implements OnInit, OnDestroy {
     let payload: any = {
       per_page: 15,
       page: this.pageNumber(),
-      status: null,
+      status: this.filterValue,
       from_date: '2025-01-01',
       to_date: '2026-01-31',
       export: false,
@@ -69,14 +74,21 @@ export class AgentList implements OnInit, OnDestroy {
 
     // 2. Dynamically append keys from your payload
     // This loop handles any object you pass in
-    Object.keys(payload).forEach((key) => {
-      if (payload[key] !== null && payload[key] !== undefined) {
-        params = params.append(key, payload[key].toString());
+    // 0  pending
+    // 1  Submitted
+    // 2  Rejected
+    // 3  Re-Submitted
+    // 4  Active
+    // 5  blocked
+
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        params = params.append(key, value.toString());
       }
     });
     console.log(params.toString());
     this.http
-      .get<any>(`http://13.202.146.57/api/v1/admin/agent-list?${params.toString()}`)
+      .get<any>(`agent-list?${params.toString()}`)
       .subscribe({
         next: (res) => {
           // Based on your console.log(res.data.data)
@@ -92,14 +104,19 @@ export class AgentList implements OnInit, OnDestroy {
       });
   }
 
-  handleOptionChange(event: any) {
-    const selectElement = event.target as HTMLSelectElement;
-    const value = selectElement.value;
-    // Handle option change logic here
+  handleOptionChange(newValue: any) {
+    if (newValue === 'null' || newValue === null) {
+      this.filterValue = null;
+    } else {
+      this.filterValue = newValue;
+    }
+    this.isLoading.set(true);
+    this.pageNumber.set(1);
+    this.getAgentList();
   }
   handlePageChange(page: number) {
+    console.log('Page changed to:', page);
     this.pageNumber.set(page);
-    this.isLoading.set(true);
     this.getAgentList();
     // Handle page change logic here
   }

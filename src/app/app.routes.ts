@@ -10,6 +10,9 @@ import { LeadsDashboard } from './pages/leadMaster/leads-dashboard/leads-dashboa
 import { Leads } from './pages/leadMaster/leads/leads';
 import { Login } from './pages/login/login';
 import { SignIn } from './pages/sign-in/sign-in';
+import { TicketDashboard } from './pages/tickets/ticket-dashboard/ticket-dashboard';
+import { TicketDetails } from './pages/tickets/ticket-details/ticket-details';
+import { TicketList } from './pages/tickets/ticket-list/ticket-list';
 import { SideMenu } from './sharedComponent/side-menu/side-menu';
 
 export const routes: Routes = [
@@ -23,6 +26,7 @@ export const routes: Routes = [
   {
     path: '',
     component: SideMenu,
+    // canActivate: [authGuard],
     children: [
       { path: 'home', component: Home },
       {
@@ -49,8 +53,17 @@ export const routes: Routes = [
         path: 'master/clients',
         component: Clients,
       },
+      {
+        path: 'ticket/dashboard',
+        component: TicketDashboard,
+      },
+      {
+        path: 'ticket/list',
+        component: TicketList,
+      },
       { path: 'leads/:lead_uuid', component: LeadDetails },
       { path: 'agent/:uuid', component: AgentDetails },
+      { path: 'ticket/:id', component: TicketDetails },
       // You can add 'agent' and 'master' routes here later
     ],
   },

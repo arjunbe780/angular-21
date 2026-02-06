@@ -1,5 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 export interface LeadsDashboardResponse {
   success: boolean;
   message: string;
@@ -57,40 +59,76 @@ export interface ClientData {
   in_progress: number;
   cancelled: number;
 }
+interface MonthOption {
+  label: string;
+  value: string;
+}
 @Component({
   selector: 'app-leads-dashboard',
   standalone: true, // Don't forget this!
-  imports: [], 
+  imports: [CommonModule, FormsModule],
   templateUrl: './leads-dashboard.html',
   styleUrl: './leads-dashboard.css',
+  
 })
-export class LeadsDashboard implements OnInit { // Added 'implements OnInit'
+export class LeadsDashboard implements OnInit {
+  // Added 'implements OnInit'
   private http = inject(HttpClient);
 
   // 1. Fixed the type to match your response interface
   leadsData = signal<LeadsDashboardResponse | null>(null);
-
+  months: MonthOption[] = [];
+  selectedMonth: any = '';
+  isLoading = signal(true);
   ngOnInit() {
+    this.generateMonthList();
     this.loadDashboardData();
   }
+  generateMonthList() {
+    const today = new Date();
 
+    for (let i = 0; i < 12; i++) {
+      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+
+      // Manual formatting: Month (1-indexed) and Year
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const year = d.getFullYear();
+      const formattedValue = `${year}-${month}`; // Results in "10-2025"
+
+      this.months.push({
+        label: d.toLocaleString('default', { month: 'long', year: 'numeric' }),
+        value: formattedValue,
+      });
+    }
+    console.log(JSON.stringify(this.months, null, 4));
+    if (this.months.length > 0) {
+      this.selectedMonth = this.months[0].value;
+    }
+  }
   loadDashboardData() {
     this.http
-      .post<LeadsDashboardResponse>('http://13.202.146.57/api/v1/admin/leads/dashboard', {
+      .post<LeadsDashboardResponse>('leads/dashboard', {
         trend_period: 'month',
-        month_filter: '2026-01',
-        from_date: '2026-01-01',
-        to_date: '2026-01-31',
+        month_filter: this.selectedMonth,
       })
       .subscribe({
-        next: (res:any) => {
+        next: (res: any) => {
           // 2. Fixed 'status' to 'success'
           if (res.success) {
             // 3. Set the whole response as it matches the interface
             this.leadsData.set(res);
+            this.isLoading.set(false);
           }
         },
-        error: (err) => console.error('Dashboard Error:', err),
+        error: (err) => {
+          console.error('Dashboard Error:', err);
+          this.isLoading.set(false);
+        },
       });
+  }
+  handleMonthChange(newValue: Date) {
+    this.selectedMonth = newValue;
+    this.isLoading.set(true);
+    this.loadDashboardData();
   }
 }

@@ -1,11 +1,8 @@
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, Input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, Input, OnInit, signal } from '@angular/core';
 
-export interface LeadDataProps {
-  lead: Lead;
-  agent: Agent;
-}
-
+// Domain-specific Interfaces
 export interface Lead {
   merchant_name: string;
   lead_code: string;
@@ -31,35 +28,58 @@ export interface Agent {
   time_remaining: string;
 }
 
+export interface LeadDataResponse {
+  lead: Lead;
+  agent: Agent;
+}
+
 @Component({
   selector: 'app-lead-details',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './lead-details.html',
   styleUrl: './lead-details.css',
 })
 export class LeadDetails implements OnInit {
+  // Use a setter for Input if you want to trigger the API call as soon as the UUID is available
   @Input() lead_uuid!: string;
-  http = inject(HttpClient);
-  leadData = signal<LeadDataProps>({ lead: {} as Lead, agent: {} as Agent });
+
+  private http = inject(HttpClient);
+
+  // Signals for state
+  leadData = signal<LeadDataResponse | null>(null);
   isLoading = signal(true);
+  error = signal<string | null>(null);
+
+  // Computed signals for easier template access
+  lead = computed(() => this.leadData()?.lead);
+  agent = computed(() => this.leadData()?.agent);
+
   ngOnInit(): void {
-    console.log(this.lead_uuid);
-    this.getLeadDetails();
+    if (this.lead_uuid) {
+      this.getLeadDetails();
+    } else {
+      this.error.set('No Lead UUID provided.');
+      this.isLoading.set(false);
+    }
   }
 
-  getLeadDetails() {
-    this.http
-      .post('http://13.202.146.57/api/v1/admin/leads/detail?leadUuId=' + this.lead_uuid, {})
-      .subscribe({
-        next: (res: any) => {
-          this.leadData.set(res.data);
-          this.isLoading.set(false);
-          console.log(res);
-        },
-        error: (err) => {
-          this.isLoading.set(false);
-          console.error('API Error:', err);
-        },
-      });
+  getLeadDetails(): void {
+    this.isLoading.set(true);
+
+    // Constructing URL with template literal for clarity
+    const url = `leads/detail?leadUuId=${this.lead_uuid}`;
+
+    this.http.post<{ data: LeadDataResponse }>(url, {}).subscribe({
+      next: (res) => {
+        this.leadData.set(res.data);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        this.error.set('Failed to load lead details.');
+        this.isLoading.set(false);
+        console.error('Lead API Error:', err);
+      },
+    });
   }
 }

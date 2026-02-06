@@ -107,7 +107,7 @@ export class AgentDetails implements OnInit {
     this.http
       .get<{
         data: AgentDetailsProps;
-      }>(`http://13.202.146.57/api/v1/admin/agent-details?uuid=${this.uuid}`)
+      }>(`agent-details?uuid=${this.uuid}`)
       .subscribe({
         next: (res) => {
           this.data.set(res.data);

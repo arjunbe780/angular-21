@@ -53,7 +53,7 @@ export class Leads implements OnInit {
     { label: 'All', value: '' },
     { label: 'Notified', value: 'notified' },
     { label: 'Completed', value: 'completed' },
-    { label: 'Pending', value: 'pending' },
+    { label: 'Accepted', value: 'accepted' },
     { label: 'In Progress', value: 'in_progress' },
     { label: 'Rejected', value: 'rejected' },
   ];
@@ -71,7 +71,7 @@ export class Leads implements OnInit {
       lead_status: this.leadStatus(),
     };
 
-    this.http.post<any>('http://13.202.146.57/api/v1/admin/leads/allLeads', payload).subscribe({
+    this.http.post<any>('leads/allLeads', payload).subscribe({
       next: (res) => {
         // Based on your console.log(res.data.data)
         this.leadList.set(res.data.data);
@@ -88,6 +88,7 @@ export class Leads implements OnInit {
   handlePageChange(page: number) {
     this.pageNumber.set(page);
     this.isLoading.set(true);
+   
     this.getAllLeads();
   }
   handleOptionChange(event: any) {
@@ -95,6 +96,7 @@ export class Leads implements OnInit {
     const value = selectElement.value;
     this.leadStatus.set(value);
     this.isLoading.set(true);
+     this.pageNumber.set(1);
     this.getAllLeads();
   }
 }

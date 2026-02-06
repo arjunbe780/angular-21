@@ -1,1 +1,39 @@
-<p>clients works!</p>
+<form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+  <label>Customer Name:</label>
+  <input formControlName="customerName" type="text" placeholder="Customer Name" class="input" />
+@if (orderForm.get('customerName')?.errors?.['required']) {
+  <div class="text-red-400 text-xs animate-in fade-in slide-in-from-top-1">
+    {{ orderForm.get('customerName')?.errors?.['required'].message }}
+  </div>
+}
+  <div formArrayName="items">
+    <h3>Order Items</h3>
+
+    <button type="button" (click)="addItem(); $event.stopPropagation()" class="button">
+      + Add Item
+    </button>
+
+    @for (item of items.controls; track $index; let i = $index) {
+      <div [formGroupName]="i" style="border: 1px solid #ccc; margin: 10px; padding: 10px">
+        <label>Product Name:</label>
+        <input formControlName="productName" type="text" placeholder="Product Name" class="input" />
+
+        <label>Qty:</label>
+        <input type="number" formControlName="quantity" placeholder="Quantity" class="input" />
+
+        <button
+          type="button"
+          [disabled]="items.length === 1"
+          (click)="removeItem(i)"
+          class="button disabled:opacity-50"
+        >
+          Remove Item
+        </button>
+      </div>
+    }
+  </div>
+
+  <button type="submit" [disabled]="orderForm.invalid" class="button disabled:opacity-50">
+    Submit Order
+  </button>
+</form>

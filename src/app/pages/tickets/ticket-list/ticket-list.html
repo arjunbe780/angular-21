@@ -1,20 +1,25 @@
 <div class="p-2 bg-slate-50 min-h-full">
   <div class="flex justify-between items-center mb-4">
-    <h2 class="text-2xl font-bold text-slate-800">Leads Management</h2>
+    <h2 class="text-2xl font-bold text-slate-800">ticket Management</h2>
     <div class="flex justify-between items-center gap-4">
-      <button
-        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-      >
-        + Add New Lead
-      </button>
-      <select
-        (change)="handleOptionChange($event)"
+      <input
+        type="text"
+        class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2 py-2"
+        placeholder="Search by name"
+        [(ngModel)]="searchTerm"
+        (input)="searchTickets()"
+      />
+      <!-- <select
+        [ngModel]="filterValue"
+        (ngModelChange)="handleOptionChange($event)"
         class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2 py-2"
       >
-        <option *ngFor="let option of filterOptions" [value]="option.value">
-          {{ option.label }}
-        </option>
-      </select>
+        @for (option of filterOptions; track option.value) {
+          <option [value]="option.value">
+            {{ option.label }}
+          </option>
+        }
+      </select> -->
       <button
         [disabled]="pageNumber() === 1"
         [ngClass]="{ disable_button: pageNumber() === 1 }"
@@ -34,23 +39,20 @@
       </button>
     </div>
   </div>
-
   <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
           <tr class="bg-slate-50 border-b border-slate-200">
-            @for (header of tableHeader; track header; let i = $index) {
-              <th
-                class="px-6 items-center py-4 text-xs font-semibold text-slate-500 uppercase font-mono text-center"
-              >
-                {{ header }}
-              </th>
-            }
+            <th
+              *ngFor="let header of tableHeader"
+              class="px-6 items-center py-4 text-xs font-semibold text-slate-500 uppercase font-mono text-center"
+            >
+              {{ header }}
+            </th>
           </tr>
         </thead>
-
-        <tbody class="divide-y divide-slate-100">
+        <tbody>
           @if (isLoading()) {
             <tr>
               <td colspan="8" class="py-20">
@@ -65,7 +67,7 @@
               </td>
             </tr>
           } @else {
-            @for (lead of leadList(); track lead.lead_uuid; let i = $index) {
+            @for (ticket of ticketList(); track ticket.id; let i = $index) {
               <tr class="hover:bg-slate-50/50 transition-colors text-center">
                 <td class="px-6 py-2">
                   <span class="font-medium text-slate-700 font-mono">{{
@@ -73,36 +75,54 @@
                   }}</span>
                 </td>
                 <td class="px-6 py-2">
-                  <span class="font-medium text-slate-700 font-mono">{{ lead.lead_code }}</span>
+                  <span class="font-medium text-slate-700 font-mono">{{
+                    ticket.ticket_number
+                  }}</span>
                 </td>
-                <td class="px-6 py-2 text-slate-600 font-mono text-sm">
-                  {{ lead.business_category_name }}
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{
+                    ticket.full_name || '-'
+                  }}</span>
                 </td>
-                <td class="px-6 py-2 text-white font-mono text-sm">
-                  <span
-                    [ngClass]="{
-                      pending_lead: lead.lead_status === 'pending',
-                      inprogrss_lead: lead.lead_status === 'in_progress',
-                      accepted_lead: lead.lead_status === 'accepted',
-                      completed_lead: lead.lead_status === 'completed',
-                      notified_lead: lead.lead_status === 'notified',
-                    }"
-                  >
-                    {{ lead.lead_status }}
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">
+                    {{ ticket.description }}
                   </span>
                 </td>
-                <td class="px-6 py-2 text-slate-600 font-mono text-sm">
-                  {{ lead.client_name }}
+                <td class="px-6 py-2">
+                  <span
+                    class="text-slate-700 font-mono text-capitalize bg-blue-100 px-2 py-1 rounded-lg"
+                    [ngClass]="{
+                      reject_ticket: ticket.status === 0,
+                      active_ticket: ticket.status === 1,
+                    }"
+                  >
+                    {{
+                      ticket.status === 0
+                        ? 'Open'
+                        : ticket.status === 1
+                          ? 'Closed'
+                          : ticket.status === 2
+                            ? 'Working'
+                            : 'Unknown'
+                    }}</span
+                  >
                 </td>
-                <td class="px-6 py-2 text-slate-600 font-mono text-sm">
-                  {{ lead.city_name }} - {{ lead.lead_pincode }}
+
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{
+                    ticket.contact_number
+                  }}</span>
                 </td>
-                <td class="px-6 py-2 text-slate-600 font-mono text-sm">
-                  {{ lead.created_date }}
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{
+                    ticket.comment || '-'
+                  }}</span>
                 </td>
-                <td class="px-6 py-2 text-slate-600 font-mono text-sm">
+                <td class="px-6 py-2">
                   <button
-                    [routerLink]="['/leads', lead.lead_uuid]"
+                    [routerLink]="['/ticket', ticket.id]"
+                    title="View Lead"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-[6px] rounded-lg text-sm font-medium transition-colors cursor-pointer"
                   >
                     View
