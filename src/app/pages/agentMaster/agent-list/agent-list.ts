@@ -43,7 +43,7 @@ export class AgentList implements OnInit, OnDestroy {
     { label: 'Blocked', value: 5 },
   ];
 
-  tableHeader = ['#', 'Agent Id', 'Name', 'Status', 'City', 'Created Date', 'Action'];
+  tableHeader = ['#', 'Agent Id', 'Name', 'Status', 'City', 'Contcat Number','Created Date', 'Action'];
 
   ngOnInit(): void {
     this.getAgentList();
@@ -66,9 +66,9 @@ export class AgentList implements OnInit, OnDestroy {
       page: this.pageNumber(),
       status: this.filterValue,
       from_date: '2025-01-01',
-      to_date: '2026-01-31',
+      to_date: new Date().toISOString().split('T')[0],
       export: false,
-      search: this.searchTerm,
+      contact_number: this.searchTerm,
     };
     let params = new HttpParams();
 

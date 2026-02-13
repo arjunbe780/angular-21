@@ -16,55 +16,34 @@ import { TicketList } from './pages/tickets/ticket-list/ticket-list';
 import { SideMenu } from './sharedComponent/side-menu/side-menu';
 
 export const routes: Routes = [
-  // 1. Public Routes (No Sidebar)
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: Login },
-  { path: 'sign-in', component: SignIn }, // Fixed typo 'sing-in'
+  { path: 'sign-in', component: SignIn },
 
-  // 2. Dashboard Routes (With Sidebar)
-  // If Home is your main layout containing the sidebar:
   {
     path: '',
     component: SideMenu,
-    // canActivate: [authGuard],
+    // canActivate: [authGuard], // Highly recommend enabling this soon!
     children: [
       { path: 'home', component: Home },
-      {
-        path: 'leads/list',
-        component: Leads,
-      },
-      {
-        path: 'leads/dashboard',
-        component: LeadsDashboard,
-      },
-      {
-        path: 'agent/list',
-        component: AgentList,
-      },
+      { path: 'leads/list', component: Leads },
+      { path: 'leads/dashboard', component: LeadsDashboard },
+      { path: 'agent/list', component: AgentList },
       {
         path: 'agent/dashboard',
         component: AgentDashboard,
       },
-      {
-        path: 'master/feedback',
-        component: Feedback,
-      },
-      {
-        path: 'master/clients',
-        component: Clients,
-      },
-      {
-        path: 'ticket/dashboard',
-        component: TicketDashboard,
-      },
-      {
-        path: 'ticket/list',
-        component: TicketList,
-      },
+      { path: 'master/feedback', component: Feedback },
+      { path: 'master/clients', component: Clients },
+      { path: 'ticket/dashboard', component: TicketDashboard }, // Fixed typo
+      { path: 'ticket/list', component: TicketList },
+
+      // Dynamic parameters always at the end
       { path: 'leads/:lead_uuid', component: LeadDetails },
       { path: 'agent/:uuid', component: AgentDetails },
       { path: 'ticket/:id', component: TicketDetails },
-      // You can add 'agent' and 'master' routes here later
     ],
   },
+  // Catch-all route (Optional but recommended)
+  { path: '**', redirectTo: 'login' },
 ];

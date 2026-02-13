@@ -1,6 +1,6 @@
 <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
   <label>Customer Name:</label>
-  <input formControlName="customerName" type="text" placeholder="Customer Name" class="input" />
+  <input formControlName="customerName" type="text" placeholder="Customer Name" id="input" class="input" #input/>
 @if (orderForm.get('customerName')?.errors?.['required']) {
   <div class="text-red-400 text-xs animate-in fade-in slide-in-from-top-1">
     {{ orderForm.get('customerName')?.errors?.['required'].message }}
@@ -9,7 +9,7 @@
   <div formArrayName="items">
     <h3>Order Items</h3>
 
-    <button type="button" (click)="addItem(); $event.stopPropagation()" class="button">
+    <button *appHasRole="'admin'" type="button" (click)="addItem(); $event.stopPropagation()" class="button">
       + Add Item
     </button>
 
@@ -36,4 +36,8 @@
   <button type="submit" [disabled]="orderForm.invalid" class="button disabled:opacity-50">
     Submit Order
   </button>
+  <button class="input" (click)="increment()">
+    Add
+  </button>
+  <!-- <h1>{{total()}} {{counter()}}</h1> -->
 </form>

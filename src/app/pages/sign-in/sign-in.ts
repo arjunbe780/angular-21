@@ -11,7 +11,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs';
+import { interval, map } from 'rxjs';
 import { AppInput } from '../../sharedComponent/app-input/app-input';
 
 @Component({
@@ -140,4 +140,13 @@ export class SignIn implements OnInit {
     }
     return largest;
   }
+
+  temperature$ = interval(1000).pipe(
+    map(() => ({ temperature: Math.floor(Math.random() * 3) + 20 })), // 20, 21, or 22 randomly
+  );
+  // Only update if the temperature changes
+  temperature = toSignal(this.temperature$, {
+    initialValue: { temperature: 20 },
+    equal: (prev, curr) => prev.temperature === curr.temperature,
+  });
 }

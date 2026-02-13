@@ -24,6 +24,8 @@ export interface DashboardCards {
 
 export interface StatusDistribution {
   approved: number;
+  reverted: number;
+  submitted: number;
   rejected: number;
 }
 
@@ -74,6 +76,7 @@ export class AgentDashboard implements OnInit {
   dashboardData = signal<DashboardData | null>(null);
   months: MonthOption[] = [];
   selectedMonth: any = '';
+  isLoading = signal(false);
 
   ngOnInit() {
     this.generateMonthList();
@@ -88,7 +91,7 @@ export class AgentDashboard implements OnInit {
       // Manual formatting: Month (1-indexed) and Year
       const month = (d.getMonth() + 1).toString().padStart(2, '0');
       const year = d.getFullYear();
-      const formattedValue = `${year}-${month}`; // Results in "10-2025"
+      const formattedValue = `${month}-${year}`; // Results in "10-2025"
 
       this.months.push({
         label: d.toLocaleString('default', { month: 'long', year: 'numeric' }),
@@ -100,13 +103,17 @@ export class AgentDashboard implements OnInit {
     }
   }
   loadDashboardData() {
+    this.isLoading.set(true);
     this.http.get<DashboardResponse>(`agent/dashboard?month_year=${this.selectedMonth}`).subscribe({
       next: (res) => {
         if (res.status) {
           this.dashboardData.set(res.data);
+          this.isLoading.set(false);
         }
       },
-      error: (err) => console.error('Dashboard Error:', err),
+      error: (err) => {
+        this.isLoading.set(false);
+      },
     });
   }
   handleMonthChange(newValue: Date) {

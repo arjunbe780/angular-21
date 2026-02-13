@@ -42,7 +42,7 @@ export class SideMenu {
     {
       label: 'Tickets',
       children: [
-        { label: 'Ticket Dashboard', route: '/ticket/dasboard' },
+        { label: 'Ticket Dashboard', route: '/ticket/dashboard' },
         { label: 'Ticket List', route: '/ticket/list' },
       ],
     },

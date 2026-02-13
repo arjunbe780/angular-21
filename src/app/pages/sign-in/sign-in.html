@@ -1,4 +1,5 @@
-<div class="h-[100vh] items-center justify-center gap-6">
+<div class="h-[100vh] items-center justify-center gap-6 scrollbar-hide overflow-y-auto"
+>
   <input [(ngModel)]="userData()[0].name" />
   <h1>{{ userData()[0].name }}</h1>
   <form
@@ -29,7 +30,9 @@
         }
       }
     </div>
-    <input placeholder="Password" formControlName="password" class="input" type="password" />
+    <input placeholder="Password" formControlName="password" class="input" type="password" 
+    
+    />
     <div>
       @if (reactForm.get('password')?.touched) {
         @if (reactForm.get('password')?.errors?.['required']) {
@@ -130,4 +133,6 @@
     <ng-container *ngIf="hero"> and saw {{ hero.name }}. I waved </ng-container>
     and continued on my way.
   </p>
+
+  <h1 style="background-color: red; padding: 10px;">{{temperature()|json}}</h1>
 </div>

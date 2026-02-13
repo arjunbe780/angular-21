@@ -20,7 +20,7 @@ export interface Result {
   status: number;
   comment: any;
   full_name: string;
-  contact_number: string;
+  code: string;
   created_date: any;
   updated_date: any;
   created_user: any;
@@ -29,7 +29,7 @@ export interface Result {
 }
 @Component({
   selector: 'app-ticket-list',
-  imports: [RouterLink,CommonModule,FormsModule],
+  imports: [RouterLink, CommonModule, FormsModule],
   templateUrl: './ticket-list.html',
   styleUrl: './ticket-list.css',
 })
@@ -37,19 +37,18 @@ export class TicketList implements OnInit {
   http = inject(HttpClient);
   ticketList = signal<Result[]>([]);
   searchTerm = '';
-  pageNumber=signal(1);
-  totalPages=signal(1);
-  isLoading=signal(true);
+  pageNumber = signal(1);
+  totalPages = signal(1);
+  isLoading = signal(true);
 
   constructor() {}
 
   tableHeader = [
     '#',
     'Ticket Number',
-    'Agent Name',
+    'Agent Code',
     'Description',
     'Status',
-    'Contact Number',
     'Comments',
     'Action',
   ];
@@ -58,10 +57,14 @@ export class TicketList implements OnInit {
     this.getTicketList();
   }
   getTicketList() {
+    this.isLoading.set(true);
     let payload: any = {
-      per_page: 10,
-      page: 1,
+      per_page: 15,
+      page: this.pageNumber(),
       search: null,
+      from_date: '2026-01-01',
+      to_date: '2026-12-31',
+      user_type: 'agent',
     };
     let params = new HttpParams();
     Object.entries(payload).forEach(([key, value]) => {
@@ -70,17 +73,20 @@ export class TicketList implements OnInit {
       }
     });
 
-    this.http.get<any>(`tickets?${params.toString()}`).subscribe({
+    this.http.get<any>(`ticket-list?${params.toString()}`).subscribe({
       next: (res) => {
-      this.isLoading.set(false)
+        this.totalPages.set(Math.ceil(res.data.total_records / 15));
+        this.isLoading.set(false);
         this.ticketList.set(res.data.result);
         console.log(res);
       },
-      error: (err) => console.log(err),
+      error: (err) => {console.log(err);
+        this.isLoading.set(false);
+      },
     });
   }
-  searchTickets(){
-
+  searchTickets() {
+    console.log(this.searchTerm);
   }
 
   handlePageChange(page: number) {

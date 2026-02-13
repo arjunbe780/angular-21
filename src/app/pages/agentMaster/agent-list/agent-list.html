@@ -5,7 +5,7 @@
       <input
         type="text"
         class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2 py-2"
-        placeholder="Search by name"
+        placeholder="Search by number"
         [(ngModel)]="searchTerm"
         (input)="searchAgents()"
       />
@@ -121,7 +121,12 @@
                 </td>
                 <td class="px-6 py-2">
                   <span class="font-medium text-slate-700 font-mono">{{
-                    agent.created_at_formatted
+                    agent.contact_number
+                  }}</span>
+                </td>
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{
+                    agent.created_at_formatted 
                   }}</span>
                 </td>
                 <td class="px-6 py-2">

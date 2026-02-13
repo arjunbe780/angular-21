@@ -1,194 +1,259 @@
-@if (dashboardData(); as data) {
-  <div class="p-6 bg-slate-50 min-h-screen">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-800">Agent Overview</h1>
-        <p class="text-slate-500 text-sm">Welcome back! Here's what's happening today.</p>
-      </div>
-      <div class="flex gap-3">
-        <button
-          (click)="loadDashboardData()"
-          class="p-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-all shadow-sm"
-        >
-          <span class="text-sm font-medium px-2">Refresh Data</span>
-        </button>
-      </div>
-    </div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 p-6">
+  <div>
+    <h1 class="text-2xl font-bold text-slate-800">Agent Overview</h1>
+    <p class="text-slate-500 text-sm">Welcome back! Here's what's happening today.</p>
+  </div>
+  <div class="flex gap-3">
+    <select
+      [(ngModel)]="selectedMonth"
+      (ngModelChange)="handleMonthChange($event)"
+      class="bg-slate-50 border border-slate-500 text-slate-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 outline-none p-2.5"
+    >
+      @for (m of months; track m.value) {
+        <option [ngValue]="m.value">{{ m.label }}</option>
+      }
+    </select>
+  </div>
+</div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-      <div
-        class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between"
-      >
-        <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Users</p>
-        <h3 class="text-4xl font-extrabold text-slate-900 mt-2">{{ data.cards.total_users }}</h3>
-      </div>
-
-      <div
-        class="bg-orange-50 p-6 rounded-2xl border border-orange-100 flex flex-col justify-between"
-      >
-        <p class="text-sm font-medium text-orange-600 uppercase tracking-wider">Pending Approval</p>
-        <h3 class="text-4xl font-extrabold text-orange-900 mt-2">
-          {{ data.cards.pending_approval }}
-        </h3>
-      </div>
-
-      <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 flex flex-col justify-between">
-        <p class="text-sm font-medium text-blue-600 uppercase tracking-wider">Today's Signups</p>
-        <h3 class="text-4xl font-extrabold text-blue-900 mt-2">{{ data.cards.today_signups }}</h3>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-      <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2">
-          Registration Trend
-          <span class="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded">Last 7 Days</span>
-        </h3>
-        <div class="h-48 flex items-end gap-3 px-2">
-          @for (day of data.registration_trend.chart_data; track day.label) {
-            <div class="flex-1 flex flex-col items-center gap-2 group">
-              <div
-                class="w-full bg-blue-500/20 group-hover:bg-blue-500 rounded-t-md transition-all duration-300 relative"
-                [style.height.%]="(+day.approved_count + +day.pending_count + 1) * 15"
-              >
-                <span
-                  class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-blue-600 opacity-100 group-hover:opacity-100 transition-opacity"
-                >
-                  {{ day.approved_count }}
-                </span>
-              </div>
-              <span class="text-[10px] font-semibold text-slate-400 uppercase">{{
-                day.label
-              }}</span>
-            </div>
-          }
-        </div>
-      </div>
-
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <h3 class="font-bold text-slate-800 mb-6">Status Distribution</h3>
-        <div class="space-y-6">
-          <div>
-            <div class="flex justify-between text-sm mb-2">
-              <span class="font-medium text-slate-600">Approved</span>
-              <span class="font-bold text-green-600">{{ data.status_distribution.approved }}</span>
-            </div>
-            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-              <div
-                class="bg-green-500 h-full"
-                [style.width.%]="(data.status_distribution.approved / data.cards.total_users) * 100"
-              ></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm mb-2">
-              <span class="font-medium text-slate-600">Rejected</span>
-              <span class="font-bold text-red-600">{{ data.status_distribution.rejected }}</span>
-            </div>
-            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-              <div
-                class="bg-red-500 h-full"
-                [style.width.%]="(data.status_distribution.rejected / data.cards.total_users) * 100"
-              ></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div class="p-5 border-b border-slate-50 flex justify-between items-center">
-          <h3 class="font-bold text-slate-800">Pending Approvals</h3>
-          <button class="text-xs text-blue-600 font-semibold hover:underline">View All</button>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="bg-slate-50/50 text-slate-500 text-[11px] uppercase tracking-wider">
-                <th class="px-6 py-3 font-semibold">Agent</th>
-                <th class="px-6 py-3 font-semibold">Contact</th>
-                <th class="px-6 py-3 font-semibold">Status</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-50">
-              @for (user of data.last_pending_users; track user.uuid) {
-                <tr class="hover:bg-slate-50/80 transition-all">
-                  <td class="px-6 py-4">
-                    <div class="flex flex-col">
-                      <span class="font-bold text-slate-800 text-sm">{{
-                        user.full_name ?? 'User Pending'
-                      }}</span>
-                      <span class="text-xs text-slate-400">{{ user.agent_code }}</span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 text-sm text-slate-600">{{ user.contact_number }}</td>
-                  <td class="px-6 py-4">
-                    <span
-                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700"
-                    >
-                      Action Required
-                    </span>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <h3 class="font-bold text-slate-800 mb-6">Agent Leaderboard</h3>
-        <div class="space-y-5">
-          @for (agent of data.agents_ranking; track agent.agent_code; let i = $index) {
-            <div
-              class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all"
-            >
-              <div class="flex items-center gap-4">
-                <div class="relative">
-                  <div
-                    class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600"
-                  >
-                    {{ agent.full_name.charAt(0) }}
-                  </div>
-                  <div
-                    class="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-white font-bold"
-                  >
-                    {{ i + 1 }}
-                  </div>
-                </div>
-                <div>
-                  <p class="text-sm font-bold text-slate-900">{{ agent.full_name }}</p>
-                  <p class="text-[10px] text-slate-400 uppercase">{{ agent.agent_code }}</p>
-                </div>
-              </div>
-              <div class="text-right">
-                <p class="text-sm font-black text-blue-600">{{ agent.total_completed_leads }}</p>
-                <p class="text-[9px] text-slate-400 uppercase font-bold">Leads</p>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    </div>
+@if (isLoading()) {
+  <div class="flex flex-col items-center justify-center min-h-[60vh] w-full">
+    <div
+      class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600 mb-4"
+    ></div>
+    <p class="text-slate-500 font-medium animate-pulse tracking-wide">Fetching lead details...</p>
   </div>
 } @else {
-  <div class="p-6 space-y-8">
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-slate-800">Agent Overview</h1>
-      <select
-        [(ngModel)]="selectedMonth"
-        (ngModelChange)="handleMonthChange($event)"
-        class="bg-slate-50 border border-slate-500 text-slate-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 outline-none p-2.5"
-      >
-        @for (m of months; track m.value) {
-          <option [ngValue]="m.value">{{ m.label }}</option>
-        }
-      </select>
+  @if (dashboardData(); as data) {
+    <div class="px-6 bg-slate-50 min-h-screen">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div
+          class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between"
+        >
+          <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Users</p>
+          <h3 class="text-4xl font-extrabold text-slate-900 mt-2">{{ data.cards.total_users }}</h3>
+        </div>
+
+        <div
+          class="bg-orange-50 p-6 rounded-2xl border border-orange-100 flex flex-col justify-between"
+        >
+          <p class="text-sm font-medium text-orange-600 uppercase tracking-wider">
+            Pending Approval
+          </p>
+          <h3 class="text-4xl font-extrabold text-orange-900 mt-2">
+            {{ data.cards.pending_approval }}
+          </h3>
+        </div>
+
+        <div
+          class="bg-blue-50 p-6 rounded-2xl border border-blue-100 flex flex-col justify-between"
+        >
+          <p class="text-sm font-medium text-blue-600 uppercase tracking-wider">Today's Signups</p>
+          <h3 class="text-4xl font-extrabold text-blue-900 mt-2">{{ data.cards.today_signups }}</h3>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2">
+            Registration Trend
+            <span class="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded"
+              >Last 7 Days</span
+            >
+          </h3>
+          <div class="h-48 flex items-end gap-3 px-2">
+            @for (day of data.registration_trend.chart_data; track day.label) {
+              <div class="flex-1 flex flex-col items-center gap-2 group">
+                <div
+                  class="w-full bg-blue-500/20 group-hover:bg-blue-500 rounded-t-md transition-all duration-300 relative"
+                  [style.height.%]="(+day.approved_count + +day.pending_count + 1) * 100"
+                >
+                  <span
+                    class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-blue-600 opacity-100 group-hover:opacity-100 transition-opacity"
+                  >
+                    {{ day.approved_count }}
+                  </span>
+                </div>
+                <span class="text-[10px] font-semibold text-slate-400 uppercase">{{
+                  day.label
+                }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <h3 class="font-bold text-slate-800 mb-6">Status Distribution</h3>
+          <div class="space-y-6">
+            
+            @if (data.status_distribution.approved > 0) {
+              <div>
+                <div class="flex justify-between text-sm mb-2">
+                  <span class="font-medium text-slate-600">Approved</span>
+                  <span class="font-bold text-green-600">{{
+                    data.status_distribution.approved
+                  }}</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div
+                    class="bg-green-500 h-full"
+                    [style.height.%]="
+                      (data.status_distribution.approved ) * 100
+                    "
+                  ></div>
+                </div>
+              </div>
+            }
+            @if (data.status_distribution.rejected > 0) {
+              <div>
+                <div class="flex justify-between text-sm mb-2">
+                  <span class="font-medium text-slate-600">Rejected</span>
+                  <span class="font-bold text-red-600">{{
+                    data.status_distribution.rejected
+                  }}</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div
+                    class="bg-red-500 h-full"
+                    [style.width.%]="
+                      (data.status_distribution.rejected / data.cards.total_users) * 100
+                    "
+                  ></div>
+                </div>
+              </div>
+            }
+            @if (data.status_distribution.submitted > 0) {
+              <div>
+                <div class="flex justify-between text-sm mb-2">
+                  <span class="font-medium text-slate-600">Submitted</span>
+                  <span class="font-bold text-red-600">{{
+                    data.status_distribution.submitted
+                  }}</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div
+                    class="bg-blue-500 h-full"
+                    [style.width.%]="
+                      (data.status_distribution.submitted / data.cards.total_users) * 100
+                    "
+                  ></div>
+                </div>
+              </div>
+            }
+            @if (data.status_distribution.reverted > 0) {
+              <div>
+                <div class="flex justify-between text-sm mb-2">
+                  <span class="font-medium text-slate-600">Reverted</span>
+                  <span class="font-bold text-red-600">{{
+                    data.status_distribution.reverted
+                  }}</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div
+                    class="bg-red-500 h-full"
+                    [style.width.%]="data.status_distribution.reverted * 100"
+                  ></div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+          <div class="p-5 border-b border-slate-50 flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Pending Approvals</h3>
+            <button class="text-xs text-blue-600 font-semibold hover:underline">View All</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50/50 text-slate-500 text-[11px] uppercase tracking-wider">
+                  <th class="px-6 py-3 font-semibold">Agent</th>
+                  <th class="px-6 py-3 font-semibold">Contact</th>
+                  <th class="px-6 py-3 font-semibold">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50">
+                @for (user of data.last_pending_users; track user.uuid) {
+                  <tr class="hover:bg-slate-50/80 transition-all">
+                    <td class="px-6 py-4">
+                      <div class="flex flex-col">
+                        <span class="font-bold text-slate-800 text-sm">{{
+                          user.full_name ?? 'User Pending'
+                        }}</span>
+                        <span class="text-xs text-slate-400">{{ user.agent_code }}</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-slate-600">{{ user.contact_number }}</td>
+                    <td class="px-6 py-4">
+                      <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700"
+                      >
+                        Action Required
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <h3 class="font-bold text-slate-800 mb-6">Agent Leaderboard</h3>
+          <div class="space-y-5">
+            @for (agent of data.agents_ranking; track agent.agent_code; let i = $index) {
+              <div
+                class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all"
+              >
+                <div class="flex items-center gap-4">
+                  <div class="relative">
+                    <div
+                      class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600"
+                    >
+                      {{ agent.full_name.charAt(0) }}
+                    </div>
+                    <div
+                      class="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-white font-bold"
+                    >
+                      {{ i + 1 }}
+                    </div>
+                  </div>
+                  <div>
+                    <p class="text-sm font-bold text-slate-900">{{ agent.full_name }}</p>
+                    <p class="text-[10px] text-slate-400 uppercase">{{ agent.agent_code }}</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-black text-blue-600">{{ agent.total_completed_leads }}</p>
+                  <p class="text-[9px] text-slate-400 uppercase font-bold">Leads</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="flex flex-col items-center justify-center w-full h-[100vh] text-slate-400">
-      <p class="text-lg">No Summary found</p>
-      <p class="text-sm">Try adjusting your filters or adding a new lead.</p>
+  } @else {
+    <div class="p-6 space-y-8">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-slate-800">Agent Overview</h1>
+        <select
+          [(ngModel)]="selectedMonth"
+          (ngModelChange)="handleMonthChange($event)"
+          class="bg-slate-50 border border-slate-500 text-slate-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 outline-none p-2.5"
+        >
+          @for (m of months; track m.value) {
+            <option [ngValue]="m.value">{{ m.label }}</option>
+          }
+        </select>
+      </div>
+      <div class="flex flex-col items-center justify-center w-full h-[100vh] text-slate-400">
+        <p class="text-lg">No Summary found</p>
+        <p class="text-sm">Try adjusting your filters or adding a new lead.</p>
+      </div>
     </div>
-  </div>
+  }
 }

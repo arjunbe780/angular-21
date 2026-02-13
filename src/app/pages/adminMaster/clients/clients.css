@@ -2,8 +2,12 @@
     border: 1px solid #ccc;
     padding: 10px;
     margin: 10px;
+    
 }
-
+:focus{
+    outline: red;
+    border: 1px solid red;
+}
 .button{
     background-color: #4CAF50;
     border: none;

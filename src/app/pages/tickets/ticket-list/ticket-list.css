@@ -10,3 +10,7 @@
   color: white;
   background-color: green;
 }
+.disable_button{
+  pointer-events: none;
+  opacity: 0.5;
+}
