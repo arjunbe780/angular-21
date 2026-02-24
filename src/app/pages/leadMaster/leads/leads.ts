@@ -74,7 +74,7 @@ export class Leads implements OnInit {
     this.http.post<any>('leads/allLeads', payload).subscribe({
       next: (res) => {
         // Based on your console.log(res.data.data)
-        this.leadList.set(res.data.data);
+        this.leadList.set(res.data.result);
         this.totalPages.set(res.data.last_page);
         this.isLoading.set(false);
       },

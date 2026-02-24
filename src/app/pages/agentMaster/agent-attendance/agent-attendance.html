@@ -1,0 +1,136 @@
+<div class="p-2 bg-slate-50 min-h-full">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold text-slate-800">Agent Attendance</h2>
+    <div class="flex justify-between items-center gap-4">
+      <input
+        type="text"
+        class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2 py-2"
+        placeholder="Search by number"
+        [(ngModel)]="searchTerm"
+        (input)="searchAgents()"
+      />
+      <input
+        type="date"
+        [(ngModel)]="selectedDate"
+        (change)="handleDateChange($event)"
+        class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2 py-2"
+      />
+      <select
+        [ngModel]="filterValue"
+        (ngModelChange)="handleFilterChange($event)"
+        class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2 py-2"
+      >
+        @for (option of filterOptions; track option.value) {
+          <option [value]="option.value">
+            {{ option.label }}
+          </option>
+        }
+      </select>
+      <button
+        [disabled]="pageNumber() === 1"
+        [ngClass]="{ disable_button: pageNumber() === 1 }"
+        (click)="handlePageChange(pageNumber() - 1)"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+      >
+        Prev
+      </button>
+      <span>{{ pageNumber() }} of {{ totalPages() }}</span>
+      <button
+        [disabled]="pageNumber() === totalPages()"
+        [ngClass]="{ disable_button: pageNumber() === totalPages() }"
+        (click)="handlePageChange(pageNumber() + 1)"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-200">
+            <th
+              *ngFor="let header of tableHeader"
+              class="px-6 items-center py-4 text-xs font-semibold text-slate-500 uppercase font-mono text-center"
+            >
+              {{ header }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (isLoading()) {
+            <tr>
+              <td colspan="8" class="py-20">
+                <div class="flex flex-col items-center justify-center w-full">
+                  <div
+                    class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"
+                  ></div>
+                  <p class="text-slate-500 font-medium animate-pulse tracking-wide">
+                    Fetching your Agent...
+                  </p>
+                </div>
+              </td>
+            </tr>
+          } @else {
+            @for (agent of agentList(); track agent.agent_code; let i = $index) {
+              <tr class="hover:bg-slate-50/50 transition-colors text-center">
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{
+                    (pageNumber() - 1) * 15 + i + 1
+                  }}</span>
+                </td>
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{ agent.agent_code }}</span>
+                </td>
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{
+                    agent.full_name || '-'
+                  }}</span>
+                </td>
+
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{
+                    agent.contact_number
+                  }}</span>
+                </td>
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">
+                    {{ agent.check_in_time || '-' }}
+                  </span>
+                </td>
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{
+                    agent.check_in_location || '-'
+                  }}</span>
+                </td>
+                <td class="px-6 py-2 flex justify-center">
+                  <img
+                    [title]="agent.check_in_photo || null | cleanUrl"
+                    [src]="agent.check_in_photo || null | cleanUrl"
+                    alt="Agent Profile"
+                    class="w-[32px] h-[32px] object-cover rounded-full border border-slate-200 shadow-sm"
+                  />
+                </td>
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{
+                    agent.attendance_status.toLocaleUpperCase()
+                  }}</span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="py-20">
+                  <div class="flex flex-col items-center justify-center w-full text-slate-400">
+                    <p class="text-lg">No leads found</p>
+                    <p class="text-sm">Try adjusting your filters or adding a new lead.</p>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

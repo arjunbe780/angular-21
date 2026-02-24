@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Clients } from './pages/adminMaster/clients/clients';
 import { Feedback } from './pages/adminMaster/feedback/feedback';
+import { AgentAttendanceComponent } from './pages/agentMaster/agent-attendance/agent-attendance';
 import { AgentDashboard } from './pages/agentMaster/agent-dashboard/agent-dashboard';
 import { AgentDetails } from './pages/agentMaster/agent-details/agent-details';
 import { AgentList } from './pages/agentMaster/agent-list/agent-list';
@@ -29,6 +30,7 @@ export const routes: Routes = [
       { path: 'leads/list', component: Leads },
       { path: 'leads/dashboard', component: LeadsDashboard },
       { path: 'agent/list', component: AgentList },
+      { path: 'agent/attendance', component: AgentAttendanceComponent },
       {
         path: 'agent/dashboard',
         component: AgentDashboard,

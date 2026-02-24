@@ -1,12 +1,16 @@
-<div class="h-[100vh] items-center justify-center gap-6 scrollbar-hide overflow-y-auto"
->
+<div class="h-[100vh] items-center justify-center gap-6 scrollbar-hide overflow-y-auto">
+  <h2>{{ count$ | async }}</h2>
+
+  <button (click)="inc()">+</button>
+  <button (click)="dec()">-</button>
+  <button (click)="reset()">Reset</button>
   <input [(ngModel)]="userData()[0].name" />
   <h1>{{ userData()[0].name }}</h1>
   <form
     [formGroup]="reactForm"
     class="flex flex-col bg-red-50 p-4 gap-2"
     (ngSubmit)="reactFormSubmit()"
-  > 
+  >
     <h1 class="header">Reactive Form</h1>
     <input
       placeholder="Username"
@@ -30,9 +34,7 @@
         }
       }
     </div>
-    <input placeholder="Password" formControlName="password" class="input" type="password" 
-    
-    />
+    <input placeholder="Password" formControlName="password" class="input" type="password" />
     <div>
       @if (reactForm.get('password')?.touched) {
         @if (reactForm.get('password')?.errors?.['required']) {
@@ -134,5 +136,5 @@
     and continued on my way.
   </p>
 
-  <h1 style="background-color: red; padding: 10px;">{{temperature()|json}}</h1>
+  <h1 style="background-color: red; padding: 10px">{{ temperature() | json }}</h1>
 </div>

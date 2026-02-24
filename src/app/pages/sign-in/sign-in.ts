@@ -11,9 +11,10 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { interval, map } from 'rxjs';
 import { AppInput } from '../../sharedComponent/app-input/app-input';
-
+import * as CounterActions from '../../store/userStore/counter.actions';
 @Component({
   selector: 'app-sign-in',
   standalone: true,
@@ -26,6 +27,18 @@ export class SignIn implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
+  private store = inject(Store);
+  count$ = this.store.select((state) => state.counter.count);
+
+  inc() {
+    this.store.dispatch(CounterActions.increment());
+  }
+  dec() {
+    this.store.dispatch(CounterActions.decrement());
+  }
+  reset() {
+    this.store.dispatch(CounterActions.reset());
+  }
 
   @Input() username!: string;
 

@@ -116,7 +116,7 @@ export class LeadsDashboard implements OnInit {
           // 2. Fixed 'status' to 'success'
           if (res.success) {
             // 3. Set the whole response as it matches the interface
-            this.leadsData.set(res);
+            this.leadsData.set(res.data);
             this.isLoading.set(false);
           }
         },

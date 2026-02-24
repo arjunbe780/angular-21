@@ -289,17 +289,18 @@ export class AgentDetails implements OnInit {
   }
 
   submit(): void {
-    this.http.post<any>('agent/update-status', this.buildPayload()).subscribe({
-      next: () => {
-        this.isOpen = false;
-        this.selectedReasons = {};
-        this.getAgentDetails();
-        this._snackBar.open('Agent Reverted Successfully', 'Close', { duration: 3000 });
-      },
-      error: (err) => {
-        console.error('API Error:', err);
-        this._snackBar.open('Error submitting rejection', 'Close', { duration: 3000 });
-      },
-    });
+    this.buildPayload()
+    // this.http.post<any>('agent/update-status', this.buildPayload()).subscribe({
+    //   next: () => {
+    //     this.isOpen = false;
+    //     this.selectedReasons = {};
+    //     this.getAgentDetails();
+    //     this._snackBar.open('Agent Reverted Successfully', 'Close', { duration: 3000 });
+    //   },
+    //   error: (err) => {
+    //     console.error('API Error:', err);
+    //     this._snackBar.open('Error submitting rejection', 'Close', { duration: 3000 });
+    //   },
+    // });
   }
 }

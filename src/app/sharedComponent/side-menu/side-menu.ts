@@ -30,6 +30,7 @@ export class SideMenu {
       children: [
         { label: 'Agent Dashboard', route: '/agent/dashboard' },
         { label: 'All Agents', route: '/agent/list' },
+        { label: 'Attendance', route: '/agent/attendance' },
       ],
     },
     {

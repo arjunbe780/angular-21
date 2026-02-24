@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
@@ -12,7 +13,7 @@ import { Router, RouterLink } from '@angular/router';
 export class Login {
   private fb = inject(FormBuilder);
   router = inject(Router);
-
+  snackbar = inject(MatSnackBar);
   http = inject(HttpClient);
   // Define the form structure
   loginForm = this.fb.group({
@@ -22,12 +23,20 @@ export class Login {
   onSubmit() {
     if (this.loginForm.valid) {
       this.http.post('login', this.loginForm.value).subscribe({
-        next: (res:any) => {
+        next: (res: any) => {
           console.log(res);
           localStorage.setItem('token', res.data.access_token);
           this.router.navigateByUrl('/home');
+          this.snackbar.open('Login successful!', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar']
+          })
         },
         error: (err) => {
+          this.snackbar.open('Login failed. Please check your credentials.', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar']
+          });
           console.log(err);
         },
       });
