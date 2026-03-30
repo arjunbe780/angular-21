@@ -1,0 +1,130 @@
+<div class="p-2 bg-slate-50 min-h-full">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold text-slate-800">Form Category List</h2>
+    <div class="flex justify-between items-center gap-4">
+      <button
+        [routerLink]="'/form/create'"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+      >
+        + Create Form
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-200">
+            @for (header of tableHeader; track header; let i = $index) {
+              <th
+                class="px-6 items-center py-4 text-xs font-semibold text-slate-500 uppercase font-mono text-center"
+              >
+                {{ header }}
+              </th>
+            }
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-slate-100">
+          @if (isLoading()) {
+            <tr>
+              <td colspan="8" class="py-20">
+                <div class="flex flex-col items-center justify-center w-full">
+                  <div
+                    class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"
+                  ></div>
+                  <p class="text-slate-500 font-medium animate-pulse tracking-wide">
+                    Fetching your leads...
+                  </p>
+                </div>
+              </td>
+            </tr>
+          } @else {
+            @for (lead of leadList(); track lead.id; let i = $index) {
+              <tr class="hover:bg-slate-50/50 transition-colors text-center">
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{
+                    (pageNumber() - 1) * 15 + i + 1
+                  }}</span>
+                </td>
+                <td class="px-6 py-2">
+                  <span class="font-medium text-slate-700 font-mono">{{ lead.section_name }}</span>
+                </td>
+                <td class="px-6 py-4 text-sm text-slate-600">
+                  @if (lead.form_specific_cities_data.length > 0) {
+                    <span class="font-medium">
+                      @for (
+                        city of lead.form_specific_cities_data;
+                        track city.id;
+                        let isLast = $last
+                      ) {
+                        {{ city.city_name }}{{ isLast ? '' : ', ' }}
+                      }
+                    </span>
+                  } @else {
+                    <span
+                      class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 text-[10px] font-extrabold uppercase"
+                      >All Cities</span
+                    >
+                  }
+                </td>
+
+                <td class="px-6 py-4 text-sm text-slate-600">
+                  @if (lead.specific_clients_data.length > 0) {
+                    <span class="font-medium">
+                      @for (
+                        client of lead.specific_clients_data;
+                        track client.id;
+                        let isLast = $last
+                      ) {
+                        {{ client.client_name }}{{ isLast ? '' : ', ' }}
+                      }
+                    </span>
+                  } @else {
+                    <span
+                      class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 text-[10px] font-extrabold uppercase"
+                      >All Clients</span
+                    >
+                  }
+                </td>
+                <td class="px-6 py-2 text-slate-600 font-mono text-sm">
+                  {{ lead.updated_date }}
+                </td>
+
+                <td class="px-6 py-2 text-white font-mono text-sm">
+                  <span
+                    [ngClass]="{
+                      pending_lead: lead.status_label === 'Inactive',
+                      accepted_lead: lead.status_label === 'Active',
+                    }"
+                  >
+                    {{ lead.status_label }}
+                  </span>
+                </td>
+                <td class="px-6 py-2">
+                  <button
+                    [routerLink]="['/form/category', lead.id]"
+                    class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-[6px] rounded-lg text-sm font-medium transition-all active:scale-95 shadow-sm"
+                    title="View details for this category"
+                  >
+                    <span>View</span>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="py-20">
+                  <div class="flex flex-col items-center justify-center w-full text-slate-400">
+                    <p class="text-lg">No leads found</p>
+                    <p class="text-sm">Try adjusting your filters or adding a new lead.</p>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

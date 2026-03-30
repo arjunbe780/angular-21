@@ -17,8 +17,8 @@ export class Login {
   http = inject(HttpClient);
   // Define the form structure
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    email: ['arjun780@mailper.com', [Validators.required, Validators.email]],
+    password: ['Arjun@123', [Validators.required, Validators.minLength(6)]],
   });
   onSubmit() {
     if (this.loginForm.valid) {

@@ -5,7 +5,11 @@ import { AgentAttendanceComponent } from './pages/agentMaster/agent-attendance/a
 import { AgentDashboard } from './pages/agentMaster/agent-dashboard/agent-dashboard';
 import { AgentDetails } from './pages/agentMaster/agent-details/agent-details';
 import { AgentList } from './pages/agentMaster/agent-list/agent-list';
+import { FormCategoryList } from './pages/formMaster/form-category-list/form-category-list';
+import { FormCreate } from './pages/formMaster/form-create/form-create';
+import { FormList } from './pages/formMaster/form-list/form-list';
 import { Home } from './pages/home/home';
+import { LeadCreate } from './pages/leadMaster/lead-create/lead-create';
 import { LeadDetails } from './pages/leadMaster/lead-details/lead-details';
 import { LeadsDashboard } from './pages/leadMaster/leads-dashboard/leads-dashboard';
 import { Leads } from './pages/leadMaster/leads/leads';
@@ -29,6 +33,7 @@ export const routes: Routes = [
       { path: 'home', component: Home },
       { path: 'leads/list', component: Leads },
       { path: 'leads/dashboard', component: LeadsDashboard },
+      { path: 'leads/create', component: LeadCreate },
       { path: 'agent/list', component: AgentList },
       { path: 'agent/attendance', component: AgentAttendanceComponent },
       {
@@ -44,6 +49,10 @@ export const routes: Routes = [
       { path: 'leads/:lead_uuid', component: LeadDetails },
       { path: 'agent/:uuid', component: AgentDetails },
       { path: 'ticket/:id', component: TicketDetails },
+
+      { path: 'form/category', component: FormCategoryList },
+      { path: 'form/category/:id', component: FormList },
+      { path: 'form/create', component: FormCreate },
     ],
   },
   // Catch-all route (Optional but recommended)

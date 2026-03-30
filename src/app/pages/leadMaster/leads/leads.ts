@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 
 // Define what a Lead looks like
 export interface Lead {
@@ -24,7 +26,7 @@ export interface Lead {
 @Component({
   selector: 'app-leads',
   standalone: true, // Ensure this is here if not using NgModules
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './leads.html',
   styleUrl: './leads.css',
 })
@@ -37,6 +39,9 @@ export class Leads implements OnInit {
   pageNumber = signal(1);
   totalPages = signal(0);
   leadStatus = signal('');
+  searchText$ = new Subject<string>();
+  searchTerm = '';
+  private subscription!: Subscription;
 
   tableHeader = [
     '#',
@@ -60,6 +65,13 @@ export class Leads implements OnInit {
 
   ngOnInit(): void {
     this.getAllLeads();
+    this.subscription = this.searchText$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe((value) => {
+        this.getAllLeads();
+        console.log('Debounced search value:', value);
+        // Perform actions
+      });
   }
 
   getAllLeads() {
@@ -69,13 +81,14 @@ export class Leads implements OnInit {
       page: this.pageNumber(),
       per_page: 15,
       lead_status: this.leadStatus(),
+      lead_code_search: this.searchTerm,
     };
 
     this.http.post<any>('leads/allLeads', payload).subscribe({
       next: (res) => {
         // Based on your console.log(res.data.data)
         this.leadList.set(res.data.result);
-        this.totalPages.set(res.data.last_page);
+        this.totalPages.set(Math.ceil(res.data.total_records / 15));
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -84,11 +97,13 @@ export class Leads implements OnInit {
       },
     });
   }
-
+  searchLeads() {
+    this.searchText$.next(this.searchTerm);
+  }
   handlePageChange(page: number) {
     this.pageNumber.set(page);
     this.isLoading.set(true);
-   
+
     this.getAllLeads();
   }
   handleOptionChange(event: any) {
@@ -96,7 +111,7 @@ export class Leads implements OnInit {
     const value = selectElement.value;
     this.leadStatus.set(value);
     this.isLoading.set(true);
-     this.pageNumber.set(1);
+    this.pageNumber.set(1);
     this.getAllLeads();
   }
 }

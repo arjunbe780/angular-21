@@ -1,0 +1,31 @@
+<div class="flex flex-col items-center justify-center py-20 px-4 animate-in fade-in zoom-in duration-300">
+  <div class="relative mb-6">
+    <div class="absolute inset-0 bg-indigo-50 rounded-full scale-150 blur-3xl opacity-50"></div>
+    
+    <div class="relative bg-white p-6 rounded-3xl shadow-xl shadow-indigo-100 border border-indigo-50">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+      </svg>
+    </div>
+  </div>
+
+  <div class="text-center max-w-sm">
+    <h3 class="text-xl font-black text-slate-800 mb-2 tracking-tight">
+      {{'No Records Found' }}
+    </h3>
+    <p class="text-slate-500 text-sm leading-relaxed mb-8">
+      {{  'We couldn\'t find any data matching your current filters or selection. Try adjusting your search.' }}
+    </p>
+<!-- 
+    @if (showAction) {
+      <button 
+        (click)="actionClicked.emit()"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-2xl transition-all shadow-lg shadow-indigo-100 active:scale-95">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        {{ actionLabel || 'Refresh Data' }}
+      </button>
+    } -->
+  </div>
+</div>

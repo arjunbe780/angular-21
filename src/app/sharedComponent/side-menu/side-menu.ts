@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 interface MenuItem {
   label: string;
@@ -15,7 +15,7 @@ interface MenuItem {
 })
 export class SideMenu {
   expandedMenu = signal<string | null>(null);
-
+  route = inject(Router);
   menuItems: MenuItem[] = [
     { label: 'Home', route: '/home' },
     {
@@ -23,6 +23,7 @@ export class SideMenu {
       children: [
         { label: 'Leads Dashboard', route: '/leads/dashboard' },
         { label: 'Leads List', route: 'leads/list' },
+        { label: 'Leads Create', route: 'leads/create' },
       ],
     },
     {
@@ -32,6 +33,10 @@ export class SideMenu {
         { label: 'All Agents', route: '/agent/list' },
         { label: 'Attendance', route: '/agent/attendance' },
       ],
+    },
+    {
+      label: 'Verification Forms',
+      children: [{ label: 'Form Dashboard', route: '/form/category' }],
     },
     {
       label: 'Master',
@@ -51,5 +56,10 @@ export class SideMenu {
 
   toggleMenu(label: string) {
     this.expandedMenu.update((current) => (current === label ? null : label));
+  }
+
+  logout() {
+    localStorage.clear();
+    this.route.navigate(['/login']);
   }
 }

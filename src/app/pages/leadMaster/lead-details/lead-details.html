@@ -1,96 +1,517 @@
-<div class="p-8 bg-slate-50 min-h-screen">
-  @if (!isLoading()) {
-    <div class="flex items-center gap-4 mb-8">
-      <div class="flex items-center gap-4">
-        <h1 class="text-2xl font-bold text-slate-800">{{ leadData()?.lead?.lead_code }}</h1>
-      </div>
-      <span
-        class="ml-auto px-4 py-1.5 rounded-full text-xs font-bold uppercase bg-green-100 text-green-700"
-      >
-        {{ leadData()?.lead?.lead_status }}
-      </span>
+<mat-tab-group (selectedTabChange)="onTabChange($event)" animationDuration="0ms">
+  <mat-tab label="Lead Details">
+    <div class="p-8 bg-slate-50 min-h-screen">
+      @if (!isLoading()) {
+        <div class="flex items-center gap-4 mb-8">
+          <div class="flex items-center gap-4">
+            <h1 class="text-2xl font-bold text-slate-800">{{ leadData()?.lead?.lead_code }}</h1>
+          </div>
+          <span
+            class="ml-auto px-4 py-1.5 rounded-full text-xs font-bold uppercase bg-green-100 text-green-700"
+          >
+            {{ leadData()?.lead?.lead_status }}
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+              <h2 class="text-lg font-semibold mb-6 text-slate-800 border-b pb-2">
+                Business Details
+              </h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                @for (
+                  item of [
+                    { label: 'Business Name', value: leadData()?.lead?.business_name },
+                    { label: 'Contact Number', value: leadData()?.lead?.phone_number },
+                    { label: 'Email Address', value: leadData()?.lead?.email },
+                    { label: 'Bank Name', value: leadData()?.lead?.bank_name },
+                    { label: 'Marchent Name', value: leadData()?.lead?.merchant_name },
+                    { label: 'Address', value: leadData()?.lead?.address },
+                  ];
+                  track item.label
+                ) {
+                  <div>
+                    <label class="text-xs text-slate-400 uppercase font-bold tracking-wider">{{
+                      item.label
+                    }}</label>
+                    <p class="text-slate-700 font-medium">{{ item.value || 'N/A' }}</p>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+              <h2 class="text-lg font-semibold mb-6 text-slate-800">Assigned Agent</h2>
+              <div class="flex items-center gap-4 mb-6">
+                <img
+                  [src]="'http://' + leadData()?.agent?.agent_profile_photo"
+                  class="w-16 h-16 rounded-xl object-cover border-2 border-slate-100"
+                  alt="Agent"
+                />
+                <div>
+                  <p class="font-bold text-slate-800 text-lg">
+                    {{ leadData()?.agent?.agent_name }}
+                  </p>
+                  <p class="text-sm text-slate-500">{{ leadData()?.agent?.agent_email }}</p>
+                </div>
+              </div>
+              <div class="space-y-3 bg-slate-50 p-4 rounded-xl">
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-500">Accepted On</span>
+                  <span class="font-medium text-slate-700">{{
+                    leadData()?.agent?.accepted_on
+                  }}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-500">TAT Duration</span>
+                  <span class="font-medium text-blue-600">{{
+                    leadData()?.agent?.tat_duration
+                  }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-slate-900 p-6 rounded-2xl shadow-lg text-white">
+              <h2 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-4">
+                Time Progress
+              </h2>
+              <div class="space-y-4">
+                <div>
+                  <div class="flex justify-between mb-1 text-xs">
+                    <span>Elapsed: {{ leadData()?.agent?.time_elapsed }}</span>
+                    <span>Remaining: {{ leadData()?.agent?.time_remaining }}</span>
+                  </div>
+                  <div class="w-full bg-slate-800 rounded-full h-2">
+                    <div
+                      class="bg-blue-500 h-2 rounded-full transition-all duration-500"
+                      style="width: 45%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="flex flex-col items-center justify-center min-h-[60vh] w-full">
+          <div
+            class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600 mb-4"
+          ></div>
+          <p class="text-slate-500 font-medium animate-pulse tracking-wide">
+            Fetching lead details...
+          </p>
+        </div>
+      }
     </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <div class="lg:col-span-2 space-y-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-          <h2 class="text-lg font-semibold mb-6 text-slate-800 border-b pb-2">Business Details</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-            @for (
-              item of [
-                { label: 'Business Name', value: leadData()?.lead?.business_name },
-                { label: 'Contact Number', value: leadData()?.lead?.phone_number },
-                { label: 'Email Address', value: leadData()?.lead?.email },
-                { label: 'Bank Name', value: leadData()?.lead?.bank_name },
-                { label: 'Marchent Name', value: leadData()?.lead?.merchant_name },
-                { label: 'Address', value: leadData()?.lead?.address },
-              ];
-              track item.label
-            ) {
-              <div>
-                <label class="text-xs text-slate-400 uppercase font-bold tracking-wider">{{
-                  item.label
-                }}</label>
-                <p class="text-slate-700 font-medium">{{ item.value || 'N/A' }}</p>
+  </mat-tab>
+  <mat-tab label="Lead Notified">
+    @if (notifiedLeads()?.data) {
+      <div class="mb-6 mt-4 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div class="flex items-center gap-4">
+            <div class="bg-amber-50 p-3 rounded-xl">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 text-amber-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-slate-900">
+                {{ notifiedLeads()?.data?.lead?.business_name }}
+              </h2>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-xs font-mono bg-slate-100 px-2 py-0.5 rounded text-slate-600">
+                  {{ notifiedLeads()?.data?.lead?.lead_code }}
+                </span>
+                <span
+                  class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-bold uppercase tracking-wider"
+                >
+                  {{ notifiedLeads()?.data?.lead?.lead_status }}
+                </span>
               </div>
-            }
+            </div>
           </div>
+
+          <button
+            (click)="notifyAllAgents()"
+            class="w-full md:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all shadow-md shadow-indigo-100 flex items-center justify-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"
+              />
+            </svg>
+            Notify All Agents ({{ notifiedLeads()?.data?.agents?.length }})
+          </button>
         </div>
       </div>
 
-      <div class="space-y-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-          <h2 class="text-lg font-semibold mb-6 text-slate-800">Assigned Agent</h2>
-          <div class="flex items-center gap-4 mb-6">
-            <img
-              [src]="'http://' + leadData()?.agent?.agent_profile_photo"
-              class="w-16 h-16 rounded-xl object-cover border-2 border-slate-100"
-              alt="Agent"
-            />
-            <div>
-              <p class="font-bold text-slate-800 text-lg">{{ leadData()?.agent?.agent_name }}</p>
-              <p class="text-sm text-slate-500">{{ leadData()?.agent?.agent_email }}</p>
-            </div>
-          </div>
-          <div class="space-y-3 bg-slate-50 p-4 rounded-xl">
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-500">Accepted On</span>
-              <span class="font-medium text-slate-700">{{ leadData()?.agent?.accepted_on }}</span>
-            </div>
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-500">TAT Duration</span>
-              <span class="font-medium text-blue-600">{{ leadData()?.agent?.tat_duration }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-slate-900 p-6 rounded-2xl shadow-lg text-white">
-          <h2 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-4">
-            Time Progress
-          </h2>
-          <div class="space-y-4">
-            <div>
-              <div class="flex justify-between mb-1 text-xs">
-                <span>Elapsed: {{ leadData()?.agent?.time_elapsed }}</span>
-                <span>Remaining: {{ leadData()?.agent?.time_remaining }}</span>
-              </div>
-              <div class="w-full bg-slate-800 rounded-full h-2">
-                <div
-                  class="bg-blue-500 h-2 rounded-full transition-all duration-500"
-                  style="width: 45%"
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  } @else {
-    <div class="flex flex-col items-center justify-center min-h-[60vh] w-full">
       <div
-        class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600 mb-4"
-      ></div>
-      <p class="text-slate-500 font-medium animate-pulse tracking-wide">Fetching lead details...</p>
-    </div>
-  }
-</div>
+        class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-auto max-h-[650px] relative"
+      >
+        <table class="w-full text-center border-separate border-spacing-0">
+          <thead>
+            <tr class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+              <th
+                class="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 px-6 py-2 text-slate-600 font-mono text-sm"
+              >
+                #
+              </th>
+              <th
+                class="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 px-6 py-2 text-slate-600 font-mono text-sm"
+              >
+                Agent Details
+              </th>
+              <th
+                class="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 px-6 py-2 text-slate-600 font-mono text-sm"
+              >
+                Contact
+              </th>
+              <th
+                class="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 px-6 py-2 text-slate-600 font-mono text-sm"
+              >
+                Wave
+              </th>
+              <th
+                class="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 px-6 py-2 text-slate-600 font-mono text-sm"
+              >
+                Leads
+              </th>
+              <th
+                class="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 px-6 py-2 text-slate-600 font-mono text-sm"
+              >
+                Notified At
+              </th>
+              <th
+                class="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 px-6 py-2 text-slate-600 font-mono text-sm"
+              >
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            @for (agent of notifiedLeads()?.data?.agents; track agent.agent_uuid; let i = $index) {
+              <tr class="hover:bg-slate-50/50 transition-colors group">
+                <td class="px-6 py-4">
+                  <span class="text-sm text-slate-600 font-medium">{{ i + 1 }}</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-col">
+                    <span class="font-bold text-slate-800 text-sm">
+                      {{ agent.full_name || 'N/A' }}
+                      @if (agent.agent_leave_status === 1) {
+                        <span
+                          class="ml-1 text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded border border-red-100"
+                          >On Leave</span
+                        >
+                      }
+                    </span>
+                    <span class="text-xs text-slate-400 font-mono">{{ agent.agent_code }}</span>
+                  </div>
+                </td>
+
+                <td class="px-6 py-4">
+                  <span class="text-sm text-slate-600 font-medium">{{ agent.contact_number }}</span>
+                </td>
+
+                <td class="px-6 py-4 text-center">
+                  <span
+                    class="inline-flex items-center justify-center h-7 w-7 rounded-full bg-slate-100 text-slate-700 text-xs font-bold"
+                  >
+                    {{ agent.lead_wave }}
+                  </span>
+                </td>
+
+                <td class="px-6 py-4 text-center">
+                  <span class="text-sm font-extrabold text-indigo-600">{{ agent.lead_count }}</span>
+                </td>
+
+                <td class="px-6 py-4">
+                  <span class="text-xs text-slate-500">{{
+                    agent.notified_at | date: 'shortTime'
+                  }}</span>
+                </td>
+
+                <td class="px-6 py-4">
+                  <button
+                    (click)="notifySingleAgent(agent)"
+                    [disabled]="agent.agent_leave_status === 1"
+                    class="px-4 py-1.5 bg-white border border-slate-200 hover:border-indigo-600 hover:text-indigo-600 disabled:bg-slate-50 disabled:text-slate-300 disabled:border-slate-100 text-slate-600 text-xs font-bold rounded-lg transition-all"
+                  >
+                    Notify
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-no-data
+        title="No Agents Notified"
+        message="It looks like no agents have been assigned to this lead wave yet."
+        actionLabel="Retry Fetch"
+      >
+      </app-no-data>
+    }
+  </mat-tab>
+  <mat-tab label="Verified Details">
+    
+    @if (leadVerifiedDetails()?.data) {
+      <div class="p-4 md:p-8 bg-slate-50 min-h-screen font-sans">
+        <header class="mb-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-8">
+          <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <div class="flex items-center gap-5">
+              <div class="bg-emerald-500 p-3 rounded-xl text-white shadow-lg shadow-emerald-200">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-8 w-8"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-3">
+                  <h1 class="text-2xl font-extrabold text-slate-900 leading-none">
+                    {{ leadVerifiedDetails()?.data?.lead?.business_name }}
+                  </h1>
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+                    {{ leadVerifiedDetails()?.data?.lead?.lead_status }}
+                  </span>
+                </div>
+                <p class="text-slate-400 font-mono text-sm mt-2 flex items-center gap-1">
+                  <span class="text-xs uppercase font-bold text-slate-300">UID:</span>
+                  {{ leadVerifiedDetails()?.data?.lead?.lead_code }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="flex items-center gap-6 bg-slate-50 px-5 py-4 rounded-xl border border-slate-100 w-full lg:w-auto"
+            >
+              <div class="flex-1 lg:flex-none">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">
+                  Started
+                </p>
+                <p class="text-sm font-bold text-slate-700">
+                  {{
+                    leadVerifiedDetails()?.data?.lead?.verification_start_datetime
+                      | date: 'shortTime'
+                  }}
+                </p>
+              </div>
+              <div class="h-8 w-px bg-slate-200"></div>
+              <div class="flex-1 lg:flex-none">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">
+                  Completed
+                </p>
+                <p class="text-sm font-bold text-slate-700">
+                  {{
+                    leadVerifiedDetails()?.data?.lead?.verification_end_datetime | date: 'shortTime'
+                  }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <main class="lg:col-span-8 space-y-6">
+            @for (
+              section of leadVerifiedDetails()?.data?.dynamic_form | keyvalue;
+              track section.key
+            ) {
+              <section
+                class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+              >
+                <div class="px-6 py-4 bg-slate-50 border-b border-slate-100">
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                    {{ section.key }}
+                  </h3>
+                </div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
+                  @for (field of $any(section.value); track field.label_name) {
+                    <div class="group">
+                      <label
+                        class="block text-[10px] font-bold text-slate-400 uppercase mb-1 transition-colors group-hover:text-indigo-500"
+                      >
+                        {{ field.label_name }}
+                      </label>
+                      <div [ngSwitch]="field.element_type" class="min-h-[24px]">
+                        <div *ngSwitchCase="'rating_scale'" class="flex gap-0.5">
+                          @for (star of [1, 2, 3, 4, 5]; track star) {
+                            <svg
+                              [class.text-amber-400]="star <= field.value"
+                              class="h-5 w-5 text-slate-200"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                              />
+                            </svg>
+                          }
+                        </div>
+
+                        <div *ngSwitchCase="'toggle'">
+                          <span
+                            [class]="
+                              field.value === 'Yes'
+                                ? 'bg-indigo-600 text-white'
+                                : 'bg-slate-200 text-slate-700'
+                            "
+                            class="px-2.5 py-1 rounded text-[10px] font-black uppercase"
+                          >
+                            {{ field.value }}
+                          </span>
+                        </div>
+
+                        <p *ngSwitchCase="'date'" class="text-sm font-semibold text-slate-800">
+                          {{ field.value | date: 'mediumDate' }}
+                        </p>
+                        <p
+                          *ngSwitchDefault
+                          class="text-sm font-semibold text-slate-800 break-words leading-relaxed"
+                        >
+                          {{ formatValue(field.value) }}
+                        </p>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </section>
+            }
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+              <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">
+                Evidence Photos
+              </h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                @for (image of leadVerifiedDetails()?.data?.images; track image.name) {
+                  <div
+                    class="group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition-all hover:border-indigo-300"
+                  >
+                    <div
+                      class="p-3 bg-white border-b border-slate-100 flex justify-between items-center"
+                    >
+                      <span class="text-[10px] font-bold text-slate-600 uppercase">{{
+                        image.name
+                      }}</span>
+                      <button class="text-slate-400 hover:text-indigo-600">
+                        <i class="ph ph-magnifying-glass-plus"></i>
+                      </button>
+                    </div>
+                    <div class="p-2 flex justify-center">
+                      <img
+                        [src]="image.image"
+                        [alt]="image.name"
+                        class="h-[240px] w-[240px] object-contain rounded-lg"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                } @empty {
+                  <div
+                    class="col-span-full py-10 text-center border-2 border-dashed border-slate-200 rounded-xl"
+                  >
+                    <p class="text-slate-400 text-sm">No photo evidence provided.</p>
+                  </div>
+                }
+              </div>
+            </div>
+          </main>
+
+          <aside class="lg:col-span-4">
+            <div class="bg-slate-900 rounded-2xl p-6 text-white shadow-xl sticky top-6">
+              <div class="flex items-center gap-2 mb-6">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                  Field Agent
+                </h2>
+              </div>
+
+              <div class="flex items-center gap-4 mb-8">
+                <div
+                  class="h-14 w-14 bg-indigo-600 rounded-xl flex items-center justify-center text-xl font-bold shadow-inner"
+                >
+                  {{ leadVerifiedDetails()?.data?.agent?.full_name?.charAt(0) }}
+                </div>
+                <div>
+                  <p class="text-lg font-bold leading-tight">
+                    {{ leadVerifiedDetails()?.data?.agent?.full_name }}
+                  </p>
+                  <p
+                    class="text-xs text-slate-400 font-mono mt-1 bg-slate-800 px-2 py-0.5 rounded inline-block"
+                  >
+                    {{ leadVerifiedDetails()?.data?.agent?.agent_code }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="space-y-4 pt-6 border-t border-slate-800">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] text-slate-500 font-bold uppercase">Phone</span>
+                  <span class="text-sm font-medium">{{
+                    leadVerifiedDetails()?.data?.agent?.contact_number
+                  }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] text-slate-500 font-bold uppercase"
+                    >Wave Assignment</span
+                  >
+                  <span
+                    class="text-xs font-bold bg-indigo-500/30 text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-500/20"
+                  >
+                    {{ leadVerifiedDetails()?.data?.agent?.lead_wave }}
+                  </span>
+                </div>
+                <div class="flex justify-between items-center pt-2">
+                  <span class="text-[10px] text-slate-500 font-bold uppercase">Finalized At</span>
+                  <span class="text-xs font-bold text-emerald-400">
+                    {{ leadVerifiedDetails()?.data?.agent?.lead_completed_at | date: 'mediumDate' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    } @else {
+      <app-no-data
+        title="Verification Pending"
+        message="Detailed verification data is not yet available for this lead."
+        actionLabel="Refresh Data"
+      >
+      </app-no-data>
+    }
+  </mat-tab>
+</mat-tab-group>
